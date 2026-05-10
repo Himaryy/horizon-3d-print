@@ -9,13 +9,77 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as HomeRouteRouteImport } from './routes/_home/route'
+import { Route as AuthRouteRouteImport } from './routes/_auth/route'
+import { Route as ProductsIndexRouteImport } from './routes/products/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AccountIndexRouteImport } from './routes/account/index'
+import { Route as HomeIndexRouteImport } from './routes/_home/index'
+import { Route as ProductsSlugRouteImport } from './routes/products/$slug'
+import { Route as AccountOrdersRouteImport } from './routes/account/orders'
+import { Route as HomeCustomRouteImport } from './routes/_home/custom'
+import { Route as HomeAboutRouteImport } from './routes/_home/about'
+import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const IndexRoute = IndexRouteImport.update({
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRouteRoute = HomeRouteRouteImport.update({
+  id: '/_home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsIndexRoute = ProductsIndexRouteImport.update({
+  id: '/products/',
+  path: '/products/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/account/',
+  path: '/account/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeIndexRoute = HomeIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => HomeRouteRoute,
+} as any)
+const ProductsSlugRoute = ProductsSlugRouteImport.update({
+  id: '/products/$slug',
+  path: '/products/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AccountOrdersRoute = AccountOrdersRouteImport.update({
+  id: '/account/orders',
+  path: '/account/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeCustomRoute = HomeCustomRouteImport.update({
+  id: '/custom',
+  path: '/custom',
+  getParentRoute: () => HomeRouteRoute,
+} as any)
+const HomeAboutRoute = HomeAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => HomeRouteRoute,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -24,39 +88,188 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof HomeIndexRoute
+  '/cart': typeof CartRoute
+  '/login': typeof AuthLoginRoute
+  '/about': typeof HomeAboutRoute
+  '/custom': typeof HomeCustomRoute
+  '/account/orders': typeof AccountOrdersRoute
+  '/products/$slug': typeof ProductsSlugRoute
+  '/account/': typeof AccountIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/products/': typeof ProductsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/': typeof HomeIndexRoute
+  '/cart': typeof CartRoute
+  '/login': typeof AuthLoginRoute
+  '/about': typeof HomeAboutRoute
+  '/custom': typeof HomeCustomRoute
+  '/account/orders': typeof AccountOrdersRoute
+  '/products/$slug': typeof ProductsSlugRoute
+  '/account': typeof AccountIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/products': typeof ProductsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteRouteWithChildren
+  '/_home': typeof HomeRouteRouteWithChildren
+  '/cart': typeof CartRoute
+  '/_auth/login': typeof AuthLoginRoute
+  '/_home/about': typeof HomeAboutRoute
+  '/_home/custom': typeof HomeCustomRoute
+  '/account/orders': typeof AccountOrdersRoute
+  '/products/$slug': typeof ProductsSlugRoute
+  '/_home/': typeof HomeIndexRoute
+  '/account/': typeof AccountIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/products/': typeof ProductsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/cart'
+    | '/login'
+    | '/about'
+    | '/custom'
+    | '/account/orders'
+    | '/products/$slug'
+    | '/account/'
+    | '/admin/'
+    | '/products/'
+    | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/auth/$'
-  id: '__root__' | '/' | '/api/auth/$'
+  to:
+    | '/'
+    | '/cart'
+    | '/login'
+    | '/about'
+    | '/custom'
+    | '/account/orders'
+    | '/products/$slug'
+    | '/account'
+    | '/admin'
+    | '/products'
+    | '/api/auth/$'
+  id:
+    | '__root__'
+    | '/_auth'
+    | '/_home'
+    | '/cart'
+    | '/_auth/login'
+    | '/_home/about'
+    | '/_home/custom'
+    | '/account/orders'
+    | '/products/$slug'
+    | '/_home/'
+    | '/account/'
+    | '/admin/'
+    | '/products/'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  HomeRouteRoute: typeof HomeRouteRouteWithChildren
+  CartRoute: typeof CartRoute
+  AccountOrdersRoute: typeof AccountOrdersRoute
+  ProductsSlugRoute: typeof ProductsSlugRoute
+  AccountIndexRoute: typeof AccountIndexRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  ProductsIndexRoute: typeof ProductsIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_home': {
+      id: '/_home'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof HomeRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/': {
+      id: '/products/'
+      path: '/products'
+      fullPath: '/products/'
+      preLoaderRoute: typeof ProductsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/': {
+      id: '/account/'
+      path: '/account'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_home/': {
+      id: '/_home/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof HomeIndexRouteImport
+      parentRoute: typeof HomeRouteRoute
+    }
+    '/products/$slug': {
+      id: '/products/$slug'
+      path: '/products/$slug'
+      fullPath: '/products/$slug'
+      preLoaderRoute: typeof ProductsSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/account/orders': {
+      id: '/account/orders'
+      path: '/account/orders'
+      fullPath: '/account/orders'
+      preLoaderRoute: typeof AccountOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_home/custom': {
+      id: '/_home/custom'
+      path: '/custom'
+      fullPath: '/custom'
+      preLoaderRoute: typeof HomeCustomRouteImport
+      parentRoute: typeof HomeRouteRoute
+    }
+    '/_home/about': {
+      id: '/_home/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof HomeAboutRouteImport
+      parentRoute: typeof HomeRouteRoute
+    }
+    '/_auth/login': {
+      id: '/_auth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -68,8 +281,43 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthRouteRouteChildren {
+  AuthLoginRoute: typeof AuthLoginRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthLoginRoute: AuthLoginRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
+interface HomeRouteRouteChildren {
+  HomeAboutRoute: typeof HomeAboutRoute
+  HomeCustomRoute: typeof HomeCustomRoute
+  HomeIndexRoute: typeof HomeIndexRoute
+}
+
+const HomeRouteRouteChildren: HomeRouteRouteChildren = {
+  HomeAboutRoute: HomeAboutRoute,
+  HomeCustomRoute: HomeCustomRoute,
+  HomeIndexRoute: HomeIndexRoute,
+}
+
+const HomeRouteRouteWithChildren = HomeRouteRoute._addFileChildren(
+  HomeRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
+  HomeRouteRoute: HomeRouteRouteWithChildren,
+  CartRoute: CartRoute,
+  AccountOrdersRoute: AccountOrdersRoute,
+  ProductsSlugRoute: ProductsSlugRoute,
+  AccountIndexRoute: AccountIndexRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  ProductsIndexRoute: ProductsIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
@@ -77,10 +325,11 @@ export const routeTree = rootRouteImport
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { startInstance } from './start.ts'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }

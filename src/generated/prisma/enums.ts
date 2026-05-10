@@ -9,7 +9,53 @@
 * 🟢 You can import this file directly.
 */
 
+export const ProductCategory = {
+  READY_MADE: 'READY_MADE',
+  CUSTOM_BASE: 'CUSTOM_BASE'
+} as const
+
+export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCategory]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const OrderStatus = {
+  PENDING_PAYMENT: 'PENDING_PAYMENT',
+  PAID: 'PAID',
+  PROCESSING: 'PROCESSING',
+  PRINTING: 'PRINTING',
+  SHIPPED: 'SHIPPED',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+
+
+export const CustomOrderStatus = {
+  NEW: 'NEW',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  QUOTED: 'QUOTED',
+  ACCEPTED: 'ACCEPTED',
+  IN_PRODUCTION: 'IN_PRODUCTION',
+  COMPLETED: 'COMPLETED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type CustomOrderStatus = (typeof CustomOrderStatus)[keyof typeof CustomOrderStatus]
+
+
+export const ChatRole = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT'
+} as const
+
+export type ChatRole = (typeof ChatRole)[keyof typeof ChatRole]
+
+
+export const CouponType = {
+  PERCENT: 'PERCENT',
+  FIXED: 'FIXED'
+} as const
+
+export type CouponType = (typeof CouponType)[keyof typeof CouponType]

@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-09T00:00:00.000Z",
+  "title": "Design System: Horizon 3D Print",
+  "extensions": {
+    "colorMeta": {
+      "blueprint-blue":       { "role": "primary",   "displayName": "Blueprint Blue",       "canonical": "#2563eb", "tonalRamp": ["#1e3a8a","#1d4ed8","#2563eb","#3b82f6","#60a5fa","#93c5fd","#bfdbfe","#eff6ff"] },
+      "blueprint-blue-dark":  { "role": "primary",   "displayName": "Blueprint Blue Dark",  "canonical": "#1d4ed8", "tonalRamp": ["#1e3a8a","#1d4ed8","#2563eb","#3b82f6","#60a5fa","#93c5fd","#bfdbfe","#eff6ff"] },
+      "blueprint-blue-light": { "role": "primary",   "displayName": "Blueprint Blue Light", "canonical": "#3b82f6", "tonalRamp": ["#1e3a8a","#1d4ed8","#2563eb","#3b82f6","#60a5fa","#93c5fd","#bfdbfe","#eff6ff"] },
+      "blueprint-wash":       { "role": "tertiary",  "displayName": "Blueprint Wash",       "canonical": "#eff6ff", "tonalRamp": ["#1e3a8a","#2563eb","#bfdbfe","#dbeafe","#eff6ff","#f5f9ff","#f8fbff","#fafcff"] },
+      "filament-yellow":      { "role": "secondary", "displayName": "Filament Yellow",      "canonical": "#facc15", "tonalRamp": ["#713f12","#92400e","#d97706","#f59e0b","#facc15","#fde68a","#fef9c3","#fefce8"] },
+      "filament-yellow-dark": { "role": "secondary", "displayName": "Filament Yellow Dark", "canonical": "#eab308", "tonalRamp": ["#713f12","#92400e","#d97706","#f59e0b","#facc15","#fde68a","#fef9c3","#fefce8"] },
+      "press-black":          { "role": "neutral",   "displayName": "Press Black",          "canonical": "#111111", "tonalRamp": ["#0f0f0e","#111111","#374151","#6b7280","#9ca3af","#d1d5db","#f3f4f6","#fafaf9"] },
+      "ink":                  { "role": "neutral",   "displayName": "Ink",                  "canonical": "#0f0f0e", "tonalRamp": ["#0f0f0e","#111111","#374151","#6b7280","#9ca3af","#d1d5db","#f3f4f6","#fafaf9"] },
+      "fog":                  { "role": "neutral",   "displayName": "Fog",                  "canonical": "#6b7280", "tonalRamp": ["#111827","#374151","#4b5563","#6b7280","#9ca3af","#d1d5db","#f3f4f6","#f9fafb"] },
+      "cloud-white":          { "role": "neutral",   "displayName": "Cloud White",          "canonical": "#fafaf9", "tonalRamp": ["#111111","#374151","#9ca3af","#d1d5db","#f3f4f6","#fafaf9","#fdfdfd","#ffffff"] }
+    },
+    "typographyMeta": {
+      "display":  { "displayName": "Display",   "purpose": "Hero headings only. Left-aligned, three words max per line." },
+      "headline": { "displayName": "Headline",  "purpose": "Section titles, product names on detail pages." },
+      "title":    { "displayName": "Title",     "purpose": "Product card names, subsection labels." },
+      "body":     { "displayName": "Body",      "purpose": "Prose, descriptions, general content. Max 65ch." },
+      "label":    { "displayName": "Label",     "purpose": "Badges, kicker text, filter tabs. Uppercase, tracked." },
+      "mono":     { "displayName": "Mono/Price","purpose": "All prices, SKUs, order IDs. Formatted as Rp 125.000." }
+    },
+    "shadows": [
+      { "name": "press",    "value": "4px 4px 0 #111111",  "purpose": "Hover state on .btn-chunky and .card-hover. The only shadow in this system." },
+      { "name": "none",     "value": "none",                "purpose": "All surfaces at rest. The 2px border does the work." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "All state transitions. 120ms for buttons, 150ms for cards." },
+      { "name": "duration-btn",  "value": "120ms",                          "purpose": "Button press animation duration." },
+      { "name": "duration-card", "value": "150ms",                          "purpose": "Card hover animation duration." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px"  },
+      { "name": "md", "value": "768px"  },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action button. Blueprint Blue. Press shadow on hover.",
+      "html": "<button class=\"ds-btn-primary\">Belanja Sekarang →</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #2563eb; color: #fafaf9; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.875rem; font-weight: 800; padding: 10px 20px; border-radius: 8px; border: 2px solid #111111; cursor: pointer; transition: transform 120ms cubic-bezier(0.4,0,0.2,1), box-shadow 120ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: #1d4ed8; transform: translate(-2px, -2px); box-shadow: 4px 4px 0 #111111; } .ds-btn-primary:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; } .ds-btn-primary:active { transform: translate(0,0); box-shadow: none; }"
+    },
+    {
+      "name": "Accent Button (Cart)",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "Cart button and primary CTAs. Filament Yellow. Press shadow on hover.",
+      "html": "<button class=\"ds-btn-accent\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"21\" r=\"1\"/><circle cx=\"20\" cy=\"21\" r=\"1\"/><path d=\"M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6\"/></svg> Keranjang</button>",
+      "css": ".ds-btn-accent { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: #facc15; color: #0f0f0e; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.875rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; border: 2px solid #111111; cursor: pointer; transition: transform 120ms cubic-bezier(0.4,0,0.2,1), box-shadow 120ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-accent:hover { background: #eab308; transform: translate(-2px, -2px); box-shadow: 4px 4px 0 #111111; } .ds-btn-accent:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; } .ds-btn-accent:active { transform: translate(0,0); box-shadow: none; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary action. White with 2px border. Press shadow on hover.",
+      "html": "<button class=\"ds-btn-secondary\">Custom Order</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #fafaf9; color: #0f0f0e; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.875rem; font-weight: 800; padding: 10px 20px; border-radius: 8px; border: 2px solid #111111; cursor: pointer; transition: transform 120ms cubic-bezier(0.4,0,0.2,1), box-shadow 120ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-secondary:hover { background: #eff6ff; transform: translate(-2px, -2px); box-shadow: 4px 4px 0 #111111; } .ds-btn-secondary:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; } .ds-btn-secondary:active { transform: translate(0,0); box-shadow: none; }"
+    },
+    {
+      "name": "Product Card",
+      "kind": "card",
+      "refersTo": "card-product",
+      "description": "Product grid card. Bold border, hover press shadow, tilted in grid context.",
+      "html": "<div class=\"ds-card-product\"><div class=\"ds-card-img\">🖨️</div><div class=\"ds-card-body\"><span class=\"ds-badge\">SIAP KIRIM</span><h3 class=\"ds-card-title\">Robot Figur Articulasi</h3><div class=\"ds-card-footer\"><span class=\"ds-price\">Rp 125.000</span><button class=\"ds-btn-add\">+ Keranjang</button></div></div></div>",
+      "css": ".ds-card-product { background: #fafaf9; border: 2px solid #111111; border-radius: 10px; overflow: hidden; transition: box-shadow 150ms cubic-bezier(0.4,0,0.2,1); } .ds-card-product:hover { box-shadow: 4px 4px 0 #111111; } .ds-card-img { background: #eff6ff; height: 176px; display: flex; align-items: center; justify-content: center; font-size: 3rem; } .ds-card-body { padding: 12px; } .ds-badge { display: inline-block; background: #dbeafe; color: #1e40af; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; margin-bottom: 8px; } .ds-card-title { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 0.875rem; font-weight: 800; line-height: 1.2; margin: 4px 0 12px; } .ds-card-footer { display: flex; align-items: center; justify-content: space-between; } .ds-price { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 600; font-size: 1rem; color: #2563eb; } .ds-btn-add { background: #facc15; color: #0f0f0e; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.75rem; font-weight: 800; padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer; } .ds-btn-add:hover { background: #eab308; }"
+    },
+    {
+      "name": "Filter Pill",
+      "kind": "chip",
+      "refersTo": "chip-filter",
+      "description": "Category filter tab. Pill shape, uppercase label. Active = Blueprint Blue fill.",
+      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-pill\">Semua</button><button class=\"ds-pill ds-pill--active\">Siap Kirim</button><button class=\"ds-pill\">Bisa Custom</button></div>",
+      "css": ".ds-pill { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 16px; border-radius: 9999px; border: 2px solid #111111; background: #fafaf9; color: #0f0f0e; cursor: pointer; transition: background 120ms, color 120ms; } .ds-pill:hover { background: #eff6ff; } .ds-pill--active { background: #2563eb; color: #fafaf9; border-color: #2563eb; }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "button-primary",
+      "description": "Sticky top navbar. Blueprint Blue background. Logo + links + cart.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-logo\" href=\"/\">Horizon<span class=\"ds-nav-accent\">3D!</span></a><div class=\"ds-nav-links\"><a class=\"ds-nav-link\" href=\"/products\">Produk</a><a class=\"ds-nav-link\" href=\"/custom\">Custom Order</a></div><button class=\"ds-btn-cart\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"21\" r=\"1\"/><circle cx=\"20\" cy=\"21\" r=\"1\"/><path d=\"M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6\"/></svg> Keranjang</button></nav>",
+      "css": ".ds-nav { position: sticky; top: 0; z-index: 50; background: #2563eb; border-bottom: 3px solid #1d4ed8; padding: 0 16px; height: 56px; display: flex; align-items: center; justify-content: space-between; } .ds-nav-logo { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-size: 1.25rem; font-weight: 800; font-style: italic; color: #fafaf9; text-decoration: none; } .ds-nav-accent { color: #facc15; } .ds-nav-links { display: flex; gap: 24px; } .ds-nav-link { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.875rem; font-weight: 700; color: rgba(250,250,249,0.75); text-decoration: none; transition: color 150ms; } .ds-nav-link:hover { color: #fafaf9; } .ds-btn-cart { display: inline-flex; align-items: center; gap: 6px; background: #facc15; color: #0f0f0e; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 0.875rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; border: 2px solid #111111; cursor: pointer; transition: transform 120ms cubic-bezier(0.4,0,0.2,1), box-shadow 120ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-cart:hover { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 #111111; }"
+    },
+    {
+      "name": "Horizon Rule",
+      "kind": "custom",
+      "refersTo": "blueprint-blue",
+      "description": "Brand gradient divider. The only permitted gradient in the system.",
+      "html": "<hr class=\"ds-horizon-rule\">",
+      "css": ".ds-horizon-rule { height: 3px; background: linear-gradient(90deg, #2563eb 0%, #3b82f6 60%, #facc15 100%); border: none; margin: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Horizon Line",
+    "overview": "The horizon is where the physical and the imagined meet — exactly what 3D printing does. Horizon 3D Print's visual system lives at that line. It never collapses to a pure toy brand (too chaotic) or a pure precision tool (too cold). Every page holds both: the serious rigour of a craftsperson and the genuine delight of playing with something you made.\n\nThe density is moderate. Negative space earns its keep. Products get room to breathe, photographed with confidence, not stacked like a marketplace. The grid feels alive but not frantic. There are moments of playfulness — a tilted card, a chunky shadow — but they're earned, not defaulted to.\n\nTypography leads hard. Bricolage Grotesque carries the personality: bold, wide, slightly odd in the best way. Plus Jakarta Sans handles everything else cleanly. JetBrains Mono makes prices feel like specs — precise, trustworthy, not decorative.",
+    "keyCharacteristics": [
+      "Flat-by-default surfaces that lift on interaction (no ambient shadows; only structural)",
+      "2px solid #111111 borders on cards — the 'press' aesthetic, tactile and direct",
+      "Blueprint Blue (#2563eb) as the dominant brand color; Filament Yellow (#facc15) as a rare, precise accent",
+      "Tilted cards in product grids only — not a global pattern",
+      "JetBrains Mono for all prices and numeric values",
+      "Bricolage Grotesque at 800 weight for all headings"
+    ],
+    "rules": [
+      { "name": "The Filament Rule",       "body": "Yellow (#facc15) appears on maximum two elements per page. Cart button and logo mark. That's the budget.",                                   "section": "colors" },
+      { "name": "The Horizon Gradient Rule","body": "The only permitted gradient is the horizon-rule divider. No gradient text. No gradient backgrounds. No gradient buttons.",               "section": "colors" },
+      { "name": "The Heading Monopoly Rule","body": "Bricolage Grotesque is for headings only. Never use it for body copy, labels, or button text.",                                         "section": "typography" },
+      { "name": "The Price Precision Rule", "body": "All prices use JetBrains Mono. Format: Rp 125.000. Never approximate or estimate.",                                                    "section": "typography" },
+      { "name": "The Print Press Rule",     "body": "Shadows appear only as a response to interaction, in one form: 4px 4px 0 #111111. No ambient shadows. No blur. The border does the work.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use Bricolage Grotesque at 800 weight for all headings.",
+      "Do use 2px solid #111111 borders on all product cards.",
+      "Do use JetBrains Mono for all prices. Format: Rp 125.000.",
+      "Do tilt cards in grids: alternating rotate(-1deg) / rotate(0.8deg). Only in grids.",
+      "Do use the press shadow (4px 4px 0 #111) for hover states exclusively.",
+      "Do use Blueprint Wash (#eff6ff) as the hero and image placeholder background.",
+      "Do keep Filament Yellow on at most two elements per page.",
+      "Do respect prefers-reduced-motion: disable tilt and transitions."
+    ],
+    "donts": [
+      "Don't make this look like Tokopedia or Shopee: no badge storms, no orange-and-white grid.",
+      "Don't design like a SaaS dashboard: no feature-card grids, no '3 key features' layout.",
+      "Don't use cheap dropship patterns: no LIMITED TIME OFFER banners, no fake countdown timers.",
+      "Don't produce a Squarespace template: no centered-everything layout with a thin sans font.",
+      "Don't use gradient text (background-clip: text). Prohibited.",
+      "Don't add a side-stripe border (border-left > 1px as a colored accent).",
+      "Don't use glassmorphism.",
+      "Don't tilt a card outside of a product grid.",
+      "Don't use Filament Yellow as a large surface background.",
+      "Don't use #000 or #fff. Use #0f0f0e (Ink) and #fafaf9 (Cloud White).",
+      "Don't add ambient shadows at rest. The border does the work."
+    ]
+  }
+}

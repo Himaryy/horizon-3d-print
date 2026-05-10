@@ -1,7 +1,22 @@
 {
   "permissions": {
     "allow": [
-      "Bash(not exist *)"
+      "Bash(not exist *)",
+      "Bash(node \"C:\\\\Users\\\\Mocch\\\\.claude\\\\plugins\\\\cache\\\\impeccable\\\\impeccable\\\\3.0.7\\\\skills\\\\impeccable\\\\scripts\\\\load-context.mjs\")",
+      "Bash(Remove-Item \"d:\\\\Bisnis\\\\horizon-3d-print\\\\src\\\\routes\\\\login.tsx\" -ErrorAction SilentlyContinue)",
+      "Bash(Remove-Item \"d:\\\\Bisnis\\\\horizon-3d-print\\\\src\\\\routes\\\\about.tsx\" -ErrorAction SilentlyContinue)",
+      "Bash(Remove-Item \"d:\\\\Bisnis\\\\horizon-3d-print\\\\src\\\\routes\\\\custom.tsx\" -ErrorAction SilentlyContinue)",
+      "Bash(Remove-Item \"d:\\\\Bisnis\\\\horizon-3d-print\\\\src\\\\routes\\\\index.tsx\" -ErrorAction SilentlyContinue)",
+      "Bash(New-Item -ItemType Directory -Force \"d:\\\\Bisnis\\\\horizon-3d-print\\\\src\\\\routes\\\\_auth\")",
+      "Bash(Out-Null)",
+      "Bash(New-Item -ItemType Directory -Force \"d:\\\\Bisnis\\\\horizon-3d-print\\\\src\\\\routes\\\\_home\")",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(ls \"C:\\\\Users\\\\Mocch\\\\AppData\\\\Local\\\\Temp\\\\horizon-design\\\\\" && ls \"C:\\\\Users\\\\Mocch\\\\AppData\\\\Local\\\\Temp\\\\horizon-design\\\\horizon\\\\project\\\\\")",
+      "Read(//c/Users/Mocch/AppData/Local/Temp/**)",
+      "Bash(cd /tmp)",
+      "Bash(mkdir -p h3d)",
+      "Bash(tar -xf \"C:/Users/Mocch/AppData/Local/Temp/horizon-design.html\" -C /tmp/h3d)",
+      "Read(//tmp/**)"
     ]
   }
 }
