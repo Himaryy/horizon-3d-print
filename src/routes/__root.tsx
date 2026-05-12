@@ -7,6 +7,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import { lazy, Suspense } from 'react'
 import { Navbar } from '#/components/layouts/Navbar'
 import { Footer } from '#/components/layouts/Footer'
+import { TooltipProvider } from '#/components/ui/tooltip'
 import appCss from '../styles.css?url'
 
 const TanStackRouterDevtools = import.meta.env.DEV
@@ -56,9 +57,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <Navbar />
-        {children}
-        <Footer />
+        <TooltipProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </TooltipProvider>
         <Suspense>
           <TanStackRouterDevtools position="bottom-right" />
         </Suspense>

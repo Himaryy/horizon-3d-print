@@ -26,7 +26,7 @@ export function Materials() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:grid-cols-3">
         {MATERIALS.map((m) => (
           <div
             key={m.name}
@@ -41,13 +41,17 @@ export function Materials() {
                 <div className="h-display text-[22px] sm:text-[28px] text-ink leading-none truncate">
                   {m.name}
                 </div>
-                <div className="text-[11px] sm:text-[12.5px] text-fog mt-0.5 truncate">{m.tagline}</div>
+                <div className="text-[11px] sm:text-[12.5px] text-fog mt-0.5 truncate">
+                  {m.tagline}
+                </div>
               </div>
-              <span className="chip ml-auto shrink-0 hidden sm:inline-flex">{m.tier}</span>
+              <span className="chip ml-auto shrink-0 hidden sm:inline-flex">
+                {m.tier}
+              </span>
             </div>
 
             {/* Mobile: tier chip below name */}
-            <span className="chip sm:hidden self-start">{m.tier}</span>
+            {/* <span className="chip sm:hidden self-start">{m.tier}</span> */}
 
             <div className="hidden sm:flex flex-wrap gap-2">
               {m.properties.map((p) => (
@@ -59,7 +63,9 @@ export function Materials() {
 
             <div className="pt-3 border-t border-line">
               <span className="t-eyebrow mr-2 hidden sm:inline">Best for</span>
-              <span className="text-[12px] sm:text-[13px] text-ink-2">{m.best}</span>
+              <span className="text-[12px] sm:text-[13px] text-ink-2">
+                {m.best}
+              </span>
             </div>
           </div>
         ))}

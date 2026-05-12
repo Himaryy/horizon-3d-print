@@ -1,15 +1,8 @@
 import { formatIDR } from '#/lib/format'
+import type { Product } from '#/lib/types'
 import { Link } from '@tanstack/react-router'
 import { Button } from '../ui/button'
 import { ShoppingCart } from 'lucide-react'
-
-interface ProductProps {
-  slug: string
-  name: string
-  price: number
-  image?: string
-  category: string
-}
 
 export function ProductCard({
   category,
@@ -17,14 +10,14 @@ export function ProductCard({
   price,
   slug,
   image,
-}: ProductProps) {
+}: Product) {
   return (
     <article className="card group flex flex-col overflow-hidden transition-transform duration-200 hover:-translate-y-1.5">
       {/* Image */}
       <Link
         to="/products/$slug"
         params={{ slug }}
-        className="block aspect-[4/3] bg-paper-2 overflow-hidden"
+        className="block aspect-4/3 bg-paper-2 overflow-hidden"
       >
         {image ? (
           <img
@@ -47,7 +40,7 @@ export function ProductCard({
         <Link
           to="/products/$slug"
           params={{ slug }}
-          className="h-display text-[17px] leading-tight text-ink hover:text-sky transition-colors line-clamp-1 truncate"
+          className="h-display text-[17px] leading-tight transition-colors line-clamp-1 truncate hover:underline"
         >
           {name}
         </Link>

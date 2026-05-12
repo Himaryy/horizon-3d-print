@@ -46,7 +46,7 @@ export function HowItWorks() {
           to="/custom"
           className="btn btn-ghost shrink-0 inline-flex items-center justify-center gap-1"
         >
-          <span>See Pricing</span>
+          <span>Get a Quote</span>
           <ArrowRight className="size-4 shrink-0 -rotate-45" />
         </Link>
       </div>

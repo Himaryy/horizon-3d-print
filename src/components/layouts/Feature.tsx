@@ -36,13 +36,7 @@ export function FeatureProduct() {
       {/* Desktop: grid */}
       <div className="hidden lg:grid gap-6 grid-cols-4">
         {FEATURED.map((f) => (
-          <ProductCard
-            key={f.id}
-            slug={f.slug}
-            name={f.name}
-            price={f.price}
-            category={f.category}
-          />
+          <ProductCard key={f.id} {...f} />
         ))}
       </div>
 
@@ -51,12 +45,7 @@ export function FeatureProduct() {
         <CarouselContent className="-ml-4 pt-2 pb-3 pr-3 overflow-visible">
           {FEATURED.map((f) => (
             <CarouselItem key={f.id} className="pl-4 basis-4/5 sm:basis-1/2">
-              <ProductCard
-                slug={f.slug}
-                name={f.name}
-                price={f.price}
-                category={f.category}
-              />
+              <ProductCard {...f} />
             </CarouselItem>
           ))}
         </CarouselContent>

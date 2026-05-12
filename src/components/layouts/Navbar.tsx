@@ -57,7 +57,7 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-paper/90 backdrop-blur-md border-b border-line">
+    <header className="sticky top-0 z-50 w-full bg-paper/90 backdrop-blur-sm border-b border-line">
       <div className="mx-auto flex max-w-360 items-center gap-8 px-8 py-3.5">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 shrink-0">

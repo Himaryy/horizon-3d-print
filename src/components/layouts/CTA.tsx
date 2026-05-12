@@ -18,7 +18,7 @@ export function CTA() {
         {/* Eyebrow */}
         <span className="chip chip-ink border-[#2A2014] text-gold mb-8">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold animate-[blink_1.5s_infinite]" />
-          24h turnaround · Ships nationwide
+          Small batch · Ships nationwide
         </span>
 
         {/* Headline */}
@@ -33,9 +33,10 @@ export function CTA() {
           </span>
         </h2>
 
-        <p className="text-[17px] leading-relaxed text-(--ink-4) max-w-xl mt-7 mb-10">
-          Upload any STL or OBJ, get an instant quote across 12 materials, and
-          we'll print, finish, and ship it within 24 hours.
+        <p className="text-[17px] leading-relaxed text-paper/60 max-w-xl mt-7 mb-10">
+          Stop looking at it on screen. Upload your file and we'll put something
+          real in your hands by tomorrow — printed, finished, and shipped with
+          full attention from start to finish.
         </p>
 
         {/* CTAs */}

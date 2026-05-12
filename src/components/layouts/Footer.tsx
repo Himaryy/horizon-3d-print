@@ -67,7 +67,7 @@ export function Footer() {
             </svg>
             <span className="h-display text-paper text-2xl">Horizon 3D</span>
           </div>
-          <p className="text-sm leading-relaxed max-w-xs text-(--ink-4)">
+          <p className="text-sm leading-relaxed max-w-xs text-paper/60">
             From idea to held-in-hand. Upload any model, get an instant quote,
             and we'll print and ship it within 24 hours.
           </p>
@@ -80,9 +80,9 @@ export function Footer() {
             <ul className="flex flex-col gap-2 list-none p-0 m-0">
               {col.links.map((link) => (
                 <li key={link}>
-                  <span className="text-sm text-(--ink-4) cursor-pointer transition-colors hover:text-paper">
+                  <a href="#" className="text-sm text-paper/60 transition-colors hover:text-paper no-underline">
                     {link}
-                  </span>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -91,7 +91,7 @@ export function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="mx-auto max-w-360 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 px-8 py-5 border-t border-[#2A2014] t-mono text-xs text-(--ink-4)">
+      <div className="mx-auto max-w-360 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 px-8 py-5 border-t border-[#2A2014] t-mono text-xs text-paper/40">
         <span>
           © {new Date().getFullYear()} HORIZON 3D PRINT — JAKARTA · INDONESIA
         </span>

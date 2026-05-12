@@ -69,9 +69,9 @@ const ROW_2 = ALL_REVIEWS.slice(4)
 
 export function Reviews() {
   return (
-    <section className="w-full overflow-hidden">
+    <section className="w-full mx-auto max-w-360 px-8 overflow-hidden">
       {/* Header */}
-      <div className="mx-auto max-w-360 px-8 mb-10">
+      <div className="mb-10">
         <p className="t-eyebrow mb-3">Reviews</p>
         <h2 className="h-display text-[clamp(2.5rem,6vw,5rem)] text-ink m-0">
           What makers say.

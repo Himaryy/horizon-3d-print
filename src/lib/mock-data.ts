@@ -1,3 +1,5 @@
+import type { ProductDetail } from './types'
+
 export const MOCK_PRODUCTS = [
   {
     id: '1',
@@ -215,3 +217,32 @@ export const ALL_REVIEWS = [
     featured: false,
   },
 ]
+
+export const MOCK_DETAIL: ProductDetail = {
+  id: '1',
+  slug: 'articulated-dragon',
+  name: 'Articulated Dragon',
+  price: 185000,
+  category: 'Figurines',
+  description:
+    'Every joint moves. Printed in one piece — no assembly. PLA, 0.1mm layer height, 35% infill. Ships within 24 hours.',
+  material: 'PLA',
+  stock: 12,
+  images: [],
+  colors: [
+    { name: 'Midnight Black', hex: '#16110A' },
+    { name: 'Sky Blue', hex: '#5BB8FF' },
+    { name: 'Gold', hex: '#FFC23C' },
+    { name: 'Warm White', hex: '#FFFDF7' },
+    { name: 'Stone', hex: '#9B8E76' },
+  ],
+  specs: [
+    { label: 'Layer Height', value: '0.1mm' },
+    { label: 'Infill', value: '35%' },
+    { label: 'Material', value: 'PLA' },
+    { label: 'Dimensions', value: '22 × 18 × 12 cm' },
+    { label: 'Weight', value: '~85g' },
+    { label: 'Print Time', value: '~14 hours' },
+    { label: 'Joints', value: '34 articulated segments' },
+  ],
+}

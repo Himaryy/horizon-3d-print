@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as CartRouteImport } from './routes/cart'
 import { Route as HomeRouteRouteImport } from './routes/_home/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
@@ -19,15 +18,11 @@ import { Route as HomeIndexRouteImport } from './routes/_home/index'
 import { Route as ProductsSlugRouteImport } from './routes/products/$slug'
 import { Route as AccountOrdersRouteImport } from './routes/account/orders'
 import { Route as HomeCustomRouteImport } from './routes/_home/custom'
+import { Route as HomeCartRouteImport } from './routes/_home/cart'
 import { Route as HomeAboutRouteImport } from './routes/_home/about'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const CartRoute = CartRouteImport.update({
-  id: '/cart',
-  path: '/cart',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const HomeRouteRoute = HomeRouteRouteImport.update({
   id: '/_home',
   getParentRoute: () => rootRouteImport,
@@ -71,6 +66,11 @@ const HomeCustomRoute = HomeCustomRouteImport.update({
   path: '/custom',
   getParentRoute: () => HomeRouteRoute,
 } as any)
+const HomeCartRoute = HomeCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => HomeRouteRoute,
+} as any)
 const HomeAboutRoute = HomeAboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -89,9 +89,9 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof HomeIndexRoute
-  '/cart': typeof CartRoute
   '/login': typeof AuthLoginRoute
   '/about': typeof HomeAboutRoute
+  '/cart': typeof HomeCartRoute
   '/custom': typeof HomeCustomRoute
   '/account/orders': typeof AccountOrdersRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -102,9 +102,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof HomeIndexRoute
-  '/cart': typeof CartRoute
   '/login': typeof AuthLoginRoute
   '/about': typeof HomeAboutRoute
+  '/cart': typeof HomeCartRoute
   '/custom': typeof HomeCustomRoute
   '/account/orders': typeof AccountOrdersRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -117,9 +117,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_home': typeof HomeRouteRouteWithChildren
-  '/cart': typeof CartRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_home/about': typeof HomeAboutRoute
+  '/_home/cart': typeof HomeCartRoute
   '/_home/custom': typeof HomeCustomRoute
   '/account/orders': typeof AccountOrdersRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -133,9 +133,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/cart'
     | '/login'
     | '/about'
+    | '/cart'
     | '/custom'
     | '/account/orders'
     | '/products/$slug'
@@ -146,9 +146,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/cart'
     | '/login'
     | '/about'
+    | '/cart'
     | '/custom'
     | '/account/orders'
     | '/products/$slug'
@@ -160,9 +160,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/_home'
-    | '/cart'
     | '/_auth/login'
     | '/_home/about'
+    | '/_home/cart'
     | '/_home/custom'
     | '/account/orders'
     | '/products/$slug'
@@ -176,7 +176,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   HomeRouteRoute: typeof HomeRouteRouteWithChildren
-  CartRoute: typeof CartRoute
   AccountOrdersRoute: typeof AccountOrdersRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   AccountIndexRoute: typeof AccountIndexRoute
@@ -187,13 +186,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/cart': {
-      id: '/cart'
-      path: '/cart'
-      fullPath: '/cart'
-      preLoaderRoute: typeof CartRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_home': {
       id: '/_home'
       path: ''
@@ -257,6 +249,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeCustomRouteImport
       parentRoute: typeof HomeRouteRoute
     }
+    '/_home/cart': {
+      id: '/_home/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof HomeCartRouteImport
+      parentRoute: typeof HomeRouteRoute
+    }
     '/_home/about': {
       id: '/_home/about'
       path: '/about'
@@ -295,12 +294,14 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 
 interface HomeRouteRouteChildren {
   HomeAboutRoute: typeof HomeAboutRoute
+  HomeCartRoute: typeof HomeCartRoute
   HomeCustomRoute: typeof HomeCustomRoute
   HomeIndexRoute: typeof HomeIndexRoute
 }
 
 const HomeRouteRouteChildren: HomeRouteRouteChildren = {
   HomeAboutRoute: HomeAboutRoute,
+  HomeCartRoute: HomeCartRoute,
   HomeCustomRoute: HomeCustomRoute,
   HomeIndexRoute: HomeIndexRoute,
 }
@@ -312,7 +313,6 @@ const HomeRouteRouteWithChildren = HomeRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   HomeRouteRoute: HomeRouteRouteWithChildren,
-  CartRoute: CartRoute,
   AccountOrdersRoute: AccountOrdersRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   AccountIndexRoute: AccountIndexRoute,

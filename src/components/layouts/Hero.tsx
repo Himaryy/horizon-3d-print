@@ -76,10 +76,10 @@ export function Hero() {
           <div className="flex items-center gap-2 mb-7 flex-wrap">
             <span className="chip chip-ink">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold animate-[blink_1.5s_infinite]" />
-              Live · 12 printers running
+              Small batch · Zero compromise
             </span>
             <span className="chip bg-white-warm border-ink">
-              ⚡ 24h turnaround
+              ⚡ One printer. Full focus.
             </span>
           </div>
 
@@ -107,14 +107,14 @@ export function Hero() {
           <div className="flex items-center gap-3 flex-wrap">
             <Link
               to="/custom"
-              className="btn btn-lg bg-ink text-paper border-ink"
+              className="btn btn-lg btn-accent"
             >
               <LucideArrowUpFromLine className="size-4" />
               Upload your STL
             </Link>
             <Link
               to="/products"
-              className="btn btn-lg bg-white-warm text-ink border-ink"
+              className="btn btn-lg bg-ink text-paper border-ink"
             >
               Browse Marketplace
               <ArrowRight size={18} className="inline-block ml-1" />
@@ -141,9 +141,7 @@ export function Hero() {
         </div>
 
         {/* Stats strip */}
-        <div
-          className="relative mt-16 pt-6 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t-[1.5px] border-dashed border-ink"
-        >
+        <div className="relative mt-16 pt-6 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t-[1.5px] border-dashed border-ink">
           {STATS.map((s) => (
             <div key={s.label}>
               <div className="h-display text-[44px] text-ink leading-none">
