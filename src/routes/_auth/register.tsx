@@ -7,7 +7,7 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/_auth/login')({ component: LoginPage })
+export const Route = createFileRoute('/_auth/register')({ component: RegisterPage })
 
 function LogoMark({ size = 28 }: { size?: number }) {
   return (
@@ -32,8 +32,9 @@ function GoogleIcon() {
   )
 }
 
-function LoginPage() {
+function RegisterPage() {
   const navigate = useNavigate()
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -43,12 +44,13 @@ function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const { error: signInError } = await authClient.signIn.email({
+    const { error: signUpError } = await authClient.signUp.email({
+      name,
       email,
       password,
       callbackURL: '/account',
     })
-    if (signInError) setError(signInError.message ?? 'Sign in failed.')
+    if (signUpError) setError(signUpError.message ?? 'Registration failed.')
     setLoading(false)
   }
 
@@ -68,68 +70,81 @@ function LoginPage() {
       </button>
 
       <div className="flex flex-col items-center gap-2 text-center">
-          <LogoMark size={36} />
-          <div>
-            <h1 className="h-display text-[22px] text-ink">Welcome back</h1>
-            <p className="text-[13px] text-fog mt-1">Sign in to your Horizon 3D account</p>
-          </div>
+        <LogoMark size={36} />
+        <div>
+          <h1 className="h-display text-[22px] text-ink">Create account</h1>
+          <p className="text-[13px] text-fog mt-1">Start printing with Horizon 3D</p>
+        </div>
+      </div>
+
+      <Separator />
+
+      <button
+        type="button"
+        onClick={handleGoogle}
+        className="btn btn-ghost w-full flex items-center gap-2.5"
+      >
+        <GoogleIcon />
+        Continue with Google
+      </button>
+
+      <div className="flex items-center gap-3">
+        <Separator className="flex-1" />
+        <span className="t-eyebrow text-fog">or</span>
+        <Separator className="flex-1" />
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <Label className="t-eyebrow">Full Name</Label>
+          <Input
+            type="text"
+            placeholder="Budi Santoso"
+            autoComplete="name"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
 
-        <Separator />
-
-        <button
-          type="button"
-          onClick={handleGoogle}
-          className="btn btn-ghost w-full flex items-center gap-2.5"
-        >
-          <GoogleIcon />
-          Continue with Google
-        </button>
-
-        <div className="flex items-center gap-3">
-          <Separator className="flex-1" />
-          <span className="t-eyebrow text-fog">or</span>
-          <Separator className="flex-1" />
+        <div className="flex flex-col gap-1.5">
+          <Label className="t-eyebrow">Email</Label>
+          <Input
+            type="email"
+            placeholder="budi@email.com"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <Label className="t-eyebrow">Email</Label>
-            <Input
-              type="email"
-              placeholder="budi@email.com"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+        <div className="flex flex-col gap-1.5">
+          <Label className="t-eyebrow">Password</Label>
+          <Input
+            type="password"
+            placeholder="Min. 8 characters"
+            autoComplete="new-password"
+            minLength={8}
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
 
-          <div className="flex flex-col gap-1.5">
-            <Label className="t-eyebrow">Password</Label>
-            <Input
-              type="password"
-              placeholder="••••••••"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+        {error && <p className="text-[13px] text-destructive">{error}</p>}
 
-          {error && <p className="text-[13px] text-destructive">{error}</p>}
+        <Button type="submit" disabled={loading} className="btn btn-accent w-full h-11">
+          {loading ? 'Creating account…' : 'Create Account'}
+        </Button>
+      </form>
 
-          <Button type="submit" disabled={loading} className="btn btn-accent w-full h-11">
-            {loading ? 'Signing in…' : 'Sign In'}
-          </Button>
-        </form>
-
-        <p className="text-center text-[13px] text-fog">
-          No account?{' '}
-          <Link to="/register" className="text-sky font-semibold hover:underline">
-            Create one
-          </Link>
-        </p>
+      <p className="text-center text-[13px] text-fog">
+        Already have an account?{' '}
+        <Link to="/login" className="text-sky font-semibold hover:underline">
+          Sign in
+        </Link>
+      </p>
     </div>
   )
 }

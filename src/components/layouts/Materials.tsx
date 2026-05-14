@@ -1,11 +1,19 @@
 import { MATERIALS } from '#/lib/mock-data'
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
+import { motion } from 'motion/react'
+import { fadeUp, stagger, staggerItem, viewport } from '#/lib/motion'
 
 export function Materials() {
   return (
     <section className="mx-auto max-w-360 px-8">
-      <div className="flex items-baseline justify-between mb-10 flex-wrap gap-4">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewport}
+        className="flex items-baseline justify-between mb-10 flex-wrap gap-4"
+      >
         <div>
           <p className="t-eyebrow mb-3">Materials</p>
           <h2 className="h-display text-[clamp(2.5rem,6vw,5rem)] text-ink m-0">
@@ -24,12 +32,19 @@ export function Materials() {
           <span>Get a quote</span>
           <ArrowRight className="size-4 shrink-0 -rotate-45" />
         </Link>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:grid-cols-3">
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewport}
+        className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:grid-cols-3"
+      >
         {MATERIALS.map((m) => (
-          <div
+          <motion.div
             key={m.name}
+            variants={staggerItem}
             className="card flex flex-col gap-4 p-4 sm:p-6 transition-transform duration-200 hover:-translate-y-1.5"
           >
             <div className="flex items-center gap-2 sm:gap-3">
@@ -45,13 +60,8 @@ export function Materials() {
                   {m.tagline}
                 </div>
               </div>
-              <span className="chip ml-auto shrink-0 hidden sm:inline-flex">
-                {m.tier}
-              </span>
+              <span className="chip ml-auto shrink-0 hidden sm:inline-flex">{m.tier}</span>
             </div>
-
-            {/* Mobile: tier chip below name */}
-            {/* <span className="chip sm:hidden self-start">{m.tier}</span> */}
 
             <div className="hidden sm:flex flex-wrap gap-2">
               {m.properties.map((p) => (
@@ -63,13 +73,11 @@ export function Materials() {
 
             <div className="pt-3 border-t border-line">
               <span className="t-eyebrow mr-2 hidden sm:inline">Best for</span>
-              <span className="text-[12px] sm:text-[13px] text-ink-2">
-                {m.best}
-              </span>
+              <span className="text-[12px] sm:text-[13px] text-ink-2">{m.best}</span>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   )
 }

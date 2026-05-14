@@ -1,5 +1,7 @@
 import { ALL_REVIEWS } from '#/lib/mock-data'
 import { Marquee } from '#/components/ui/marquee'
+import { motion } from 'motion/react'
+import { fadeUp, viewport } from '#/lib/motion'
 
 type Review = (typeof ALL_REVIEWS)[number]
 
@@ -12,9 +14,7 @@ function ReviewCard({ r }: { r: Review }) {
       >
         <div className="flex gap-0.5 mb-3">
           {Array.from({ length: r.stars }).map((_, i) => (
-            <span key={i} className="text-gold text-[13px]">
-              ★
-            </span>
+            <span key={i} className="text-gold text-[13px]">★</span>
           ))}
         </div>
         <p className="m-0 text-[13.5px] leading-relaxed text-ink flex-1 line-clamp-3">
@@ -40,9 +40,7 @@ function ReviewCard({ r }: { r: Review }) {
     <div className="card w-72 shrink-0 p-5 flex flex-col">
       <div className="flex gap-0.5 mb-3">
         {Array.from({ length: r.stars }).map((_, i) => (
-          <span key={i} className="text-gold text-[13px]">
-            ★
-          </span>
+          <span key={i} className="text-gold text-[13px]">★</span>
         ))}
       </div>
       <p className="m-0 text-[13.5px] leading-relaxed text-ink-2 flex-1 line-clamp-3">
@@ -70,8 +68,13 @@ const ROW_2 = ALL_REVIEWS.slice(4)
 export function Reviews() {
   return (
     <section className="w-full mx-auto max-w-360 px-8 overflow-hidden">
-      {/* Header */}
-      <div className="mb-10">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewport}
+        className="mb-10"
+      >
         <p className="t-eyebrow mb-3">Reviews</p>
         <h2 className="h-display text-[clamp(2.5rem,6vw,5rem)] text-ink m-0">
           What makers say.
@@ -80,21 +83,15 @@ export function Reviews() {
             Honest words, real prints.
           </span>
         </h2>
-      </div>
+      </motion.div>
 
-      {/* Row 1 — left to right */}
       <Marquee pauseOnHover className="[--duration:35s] [--gap:1.25rem] pb-5">
         {ROW_1.map((r) => (
           <ReviewCard key={r.name} r={r} />
         ))}
       </Marquee>
 
-      {/* Row 2 — right to left */}
-      <Marquee
-        reverse
-        pauseOnHover
-        className="[--duration:30s] [--gap:1.25rem]"
-      >
+      <Marquee reverse pauseOnHover className="[--duration:30s] [--gap:1.25rem]">
         {ROW_2.map((r) => (
           <ReviewCard key={r.name} r={r} />
         ))}

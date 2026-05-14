@@ -2,13 +2,16 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
+  useRouterState,
 } from '@tanstack/react-router'
 import type { QueryClient } from '@tanstack/react-query'
 import { lazy, Suspense } from 'react'
 import { Navbar } from '#/components/layouts/Navbar'
 import { Footer } from '#/components/layouts/Footer'
 import { TooltipProvider } from '#/components/ui/tooltip'
+import { MotionConfig } from 'motion/react'
 import appCss from '../styles.css?url'
+import { Toaster } from '#/components/ui/sonner'
 
 const TanStackRouterDevtools = import.meta.env.DEV
   ? lazy(() =>
@@ -50,18 +53,27 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   ),
 })
 
+const NAVBAR_EXCLUDED = ['/login', '/register', '/admin']
+
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const isNavExcluded = NAVBAR_EXCLUDED.some((r) => pathname.startsWith(r))
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <TooltipProvider>
-          <Navbar />
-          {children}
-          <Footer />
-        </TooltipProvider>
+        <MotionConfig reducedMotion="user">
+          <TooltipProvider>
+            {!isNavExcluded && <Navbar />}
+            {children}
+            {!isNavExcluded && <Footer />}
+
+            <Toaster richColors position="top-right" />
+          </TooltipProvider>
+        </MotionConfig>
         <Suspense>
           <TanStackRouterDevtools position="bottom-right" />
         </Suspense>

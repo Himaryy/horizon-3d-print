@@ -16,9 +16,12 @@ import {
 import { ProductCard } from '#/components/product/ProductCard'
 import { formatIDR } from '#/lib/format'
 import { MOCK_DETAIL, MOCK_PRODUCTS } from '#/lib/mock-data'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { ChevronDown, ChevronRight, Info, ShoppingCart } from 'lucide-react'
+import { motion } from 'motion/react'
 import { useState } from 'react'
+import { useCartStore } from '#/store/cart'
+import { fadeUp, stagger, staggerItem, viewport } from '#/lib/motion'
 
 export const Route = createFileRoute('/products/$slug')({
   component: RouteComponent,
@@ -27,7 +30,10 @@ export const Route = createFileRoute('/products/$slug')({
 const MATERIALS = ['PLA', 'PETG', 'TPU', 'Resin']
 
 function RouteComponent() {
+  const navigate = useNavigate()
   const product = MOCK_DETAIL
+  const addItem = useCartStore((s) => s.addItem)
+
   const [qty, setQty] = useState(1)
   const [activeMaterial, setActiveMaterial] = useState(
     product.material ?? 'PLA',
@@ -37,8 +43,41 @@ function RouteComponent() {
   )
   const [specsOpen, setSpecsOpen] = useState(false)
 
+  // handler
+  function handleQtyIncrease() {
+    setQty((prev) => Math.max(1, prev + 1))
+  }
+
+  function handleQtyDecrease() {
+    setQty((prev) => Math.max(1, prev - 1))
+  }
+
+  function handleAddToCart() {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      material: activeMaterial,
+      color: activeColor || undefined,
+      qty,
+      category: product.category,
+      slug: product.slug,
+    })
+  }
+
+  function handleBuyNow() {
+    handleAddToCart()
+    navigate({ to: '/cart' })
+  }
+
   return (
-    <main className="mx-auto max-w-360 px-8 py-10 flex flex-col gap-16">
+    <motion.main
+      variants={fadeUp}
+      initial="hidden"
+      animate="show"
+      className="mx-auto max-w-360 px-8 py-10 flex flex-col gap-16"
+    >
       <nav className="flex items-center gap-1.5 t-eyebrow text-fog">
         <Link to="/products" className="hover:text-ink transition-colors">
           Products
@@ -198,7 +237,7 @@ function RouteComponent() {
                 variant={'outline'}
                 size={'icon'}
                 className="rounded-full"
-                onClick={() => setQty(Math.max(1, qty - 1))}
+                onClick={handleQtyDecrease}
               >
                 -
               </Button>
@@ -207,7 +246,7 @@ function RouteComponent() {
                 variant={'outline'}
                 size={'icon'}
                 className="rounded-full"
-                onClick={() => setQty(Math.max(1, qty + 1))}
+                onClick={handleQtyIncrease}
               >
                 +
               </Button>
@@ -221,11 +260,18 @@ function RouteComponent() {
           )}
 
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
-            <Button className="btn btn-accent flex-1 h-12 text-[15px]">
+            <Button
+              className="btn btn-accent flex-1 h-12 text-[15px]"
+              onClick={handleAddToCart}
+            >
               <ShoppingCart className="size-4" />
               Add to cart — {formatIDR(product.price * qty)}
             </Button>
-            <Button variant={'outline'} className="h-12 rounded-full">
+            <Button
+              variant={'outline'}
+              className="h-12 rounded-full"
+              onClick={handleBuyNow}
+            >
               Buy Now
             </Button>
           </div>
@@ -234,19 +280,29 @@ function RouteComponent() {
 
       {/* RELATED PRODUCTS */}
       <section>
-        <p className="t-eyebrow mb-3">More like this</p>
-        <h2 className="h-display text-[clamp(1.8rem,4vw,3rem)] text-ink mb-8">
-          You might also{' '}
-          <span className="h-serif-italic font-stretch-normal">like these.</span>
-        </h2>
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+        <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={viewport}>
+          <p className="t-eyebrow mb-3">More like this</p>
+          <h2 className="h-display text-[clamp(1.8rem,4vw,3rem)] text-ink mb-8">
+            You might also{' '}
+            <span className="h-serif-italic font-stretch-normal">like these.</span>
+          </h2>
+        </motion.div>
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={viewport}
+          className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4"
+        >
           {MOCK_PRODUCTS.filter((p) => p.slug !== product.slug)
             .slice(0, 4)
             .map((p) => (
-              <ProductCard key={p.id} {...p} />
+              <motion.div key={p.id} variants={staggerItem}>
+                <ProductCard {...p} />
+              </motion.div>
             ))}
-        </div>
+        </motion.div>
       </section>
-    </main>
+    </motion.main>
   )
 }

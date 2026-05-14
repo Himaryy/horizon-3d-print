@@ -1,36 +1,44 @@
-// import { PrismaClient } from '../src/generated/prisma/client.js'
+import { auth } from '#/lib/auth'
+import { prisma } from '#/db'
 
-// import { PrismaPg } from '@prisma/adapter-pg'
+const ADMIN_EMAIL = 'admin.h3d@horizon.com'
+const ADMIN_NAME = 'Horizon Admin'
+const ADMIN_PASSWORD = 'Horizon3D#Admin'
 
-// const adapter = new PrismaPg({
-//   connectionString: process.env.DATABASE_URL!,
-// })
+async function main() {
+  console.log('🌱 Seeding...')
 
-// const prisma = new PrismaClient({ adapter })
+  const existing = await prisma.user.findUnique({ where: { email: ADMIN_EMAIL } })
 
-// async function main() {
-//   console.log('🌱 Seeding database...')
+  if (existing) {
+    console.log(`⚠️  Admin already exists (${ADMIN_EMAIL}). Ensuring role=admin.`)
+    await prisma.user.update({
+      where: { email: ADMIN_EMAIL },
+      data: { role: 'admin' },
+    })
+    console.log('✅ Role confirmed.')
+    return
+  }
 
-//   // Clear existing todos
-//   await prisma.todo.deleteMany()
+  await auth.api.signUpEmail({
+    body: {
+      name: ADMIN_NAME,
+      email: ADMIN_EMAIL,
+      password: ADMIN_PASSWORD,
+    },
+  })
 
-//   // Create example todos
-//   const todos = await prisma.todo.createMany({
-//     data: [
-//       { title: 'Buy groceries' },
-//       { title: 'Read a book' },
-//       { title: 'Workout' },
-//     ],
-//   })
+  await prisma.user.update({
+    where: { email: ADMIN_EMAIL },
+    data: { role: 'admin' },
+  })
 
-//   console.log(`✅ Created ${todos.count} todos`)
-// }
+  console.log(`✅ Admin created: ${ADMIN_EMAIL}`)
+}
 
-// main()
-//   .catch((e) => {
-//     console.error('❌ Error seeding database:', e)
-//     process.exit(1)
-//   })
-//   .finally(async () => {
-//     await prisma.$disconnect()
-//   })
+main()
+  .catch((e) => {
+    console.error('❌ Seed failed:', e)
+    process.exit(1)
+  })
+  .finally(() => prisma.$disconnect())

@@ -4,7 +4,6 @@ import {
   Menu,
   X,
   LogOut,
-  Package,
   Settings,
   ArrowRight,
 } from 'lucide-react'
@@ -19,12 +18,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { authClient } from '#/lib/auth-client'
 import { cn, getInitials } from '#/lib/utils'
+import { useCartStore } from '#/store/cart'
 
 const NAV_ITEMS = [
   { to: '/' as const, label: 'Home' },
   { to: '/products' as const, label: 'Products' },
   { to: '/custom' as const, label: 'Upload & Quote' },
-  { to: '/about' as const, label: 'About' },
 ]
 
 function LogoMark({ size = 32 }: { size?: number }) {
@@ -40,6 +39,8 @@ function LogoMark({ size = 32 }: { size?: number }) {
 }
 
 export function Navbar() {
+  const cartCount = useCartStore((s) => s.totalItems())
+
   const [mobileOpen, setMobileOpen] = useState(false)
   const { data: session } = authClient.useSession()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
@@ -96,6 +97,11 @@ export function Navbar() {
         <div className="hidden lg:flex items-center gap-2">
           <Link to="/cart" className="relative btn btn-ghost btn-sm">
             <ShoppingCart size={18} className="text-ink" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gold border-[1.5px] border-ink flex items-center justify-center t-mono text-[9px] text-ink leading-none">
+                {cartCount > 9 ? '9+' : cartCount}
+              </span>
+            )}
           </Link>
 
           {user ? (
@@ -120,14 +126,6 @@ export function Navbar() {
                 align="end"
                 className="w-48 border border-line rounded-xl shadow-md"
               >
-                <DropdownMenuItem asChild>
-                  <Link
-                    to="/account/orders"
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <Package className="size-4" /> My Orders
-                  </Link>
-                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link
                     to="/account"
@@ -208,19 +206,16 @@ export function Navbar() {
               onClick={close}
             >
               <ShoppingCart size={16} />
-              Cart
+              {cartCount > 0 && (
+                <span className="ml-auto w-5 h-5 rounded-full bg-gold border-[1.5px] border-ink flex items-center justify-center t-mono text-[9px] text-ink">
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
+              )}
             </Link>
 
             {/* Auth */}
             {user ? (
               <>
-                <Link
-                  to="/account/orders"
-                  className="flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium text-ink-2 hover:bg-paper-2 transition-all"
-                  onClick={close}
-                >
-                  <Package size={16} /> My Orders
-                </Link>
                 <Link
                   to="/account"
                   className="flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium text-ink-2 hover:bg-paper-2 transition-all"

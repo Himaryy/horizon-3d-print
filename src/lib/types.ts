@@ -76,3 +76,16 @@ export interface Review {
   text: string
   featured?: boolean
 }
+
+// ─── Custom Order ───────────────────────────────────────────────────────────
+
+export interface CustomOrderFormDataProps {
+  description: string
+  size: string
+  colors: string[]
+  colorNote: string
+  budgetMin: number
+  budgetMax: number
+  guestName: string
+  guestEmail: string
+}

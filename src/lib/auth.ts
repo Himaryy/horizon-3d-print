@@ -22,6 +22,9 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 30,
     updateAge: 60 * 60 * 24,
   },
+  rateLimit: {
+    enabled: true,
+  },
   user: {
     additionalFields: {
       role: {

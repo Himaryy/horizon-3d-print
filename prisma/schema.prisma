@@ -90,10 +90,8 @@ enum ProductCategory {
 model Product {
   id           String          @id @default(cuid())
   slug         String          @unique
-  nameId       String          @map("name_id")
-  nameEn       String          @map("name_en")
-  descId       String          @map("desc_id")
-  descEn       String          @map("desc_en")
+  name         String
+  desc         String
   price        Int
   stock        Int             @default(0)
   category     ProductCategory

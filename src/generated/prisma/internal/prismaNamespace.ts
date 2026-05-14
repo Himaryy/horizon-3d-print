@@ -1779,10 +1779,8 @@ export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[k
 export const ProductScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
-  nameId: 'nameId',
-  nameEn: 'nameEn',
-  descId: 'descId',
-  descEn: 'descEn',
+  name: 'name',
+  desc: 'desc',
   price: 'price',
   stock: 'stock',
   category: 'category',

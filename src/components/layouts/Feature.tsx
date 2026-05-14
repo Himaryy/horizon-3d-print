@@ -9,11 +9,19 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '#/components/ui/carousel'
+import { motion } from 'motion/react'
+import { fadeUp, stagger, staggerItem, viewport } from '#/lib/motion'
 
 export function FeatureProduct() {
   return (
     <section className="mx-auto max-w-360 px-8 w-full">
-      <div className="flex items-baseline justify-between mb-10 flex-wrap gap-4">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewport}
+        className="flex items-baseline justify-between mb-10 flex-wrap gap-4"
+      >
         <div>
           <p className="t-eyebrow mb-3">Featured</p>
           <h2 className="h-display text-[clamp(2.5rem,6vw,5rem)] text-ink m-0">
@@ -31,16 +39,24 @@ export function FeatureProduct() {
           <span>See all products</span>
           <ArrowRight className="size-4 shrink-0 -rotate-45" />
         </Link>
-      </div>
+      </motion.div>
 
-      {/* Desktop: grid */}
-      <div className="hidden lg:grid gap-6 grid-cols-4">
+      {/* Desktop: stagger grid */}
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewport}
+        className="hidden lg:grid gap-6 grid-cols-4"
+      >
         {FEATURED.map((f) => (
-          <ProductCard key={f.id} {...f} />
+          <motion.div key={f.id} variants={staggerItem}>
+            <ProductCard {...f} />
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
-      {/* Mobile: carousel */}
+      {/* Mobile: carousel (no stagger — just slides in) */}
       <Carousel className="lg:hidden overflow-visible" opts={{ align: 'start', dragFree: true }}>
         <CarouselContent className="-ml-4 pt-2 pb-3 pr-3 overflow-visible">
           {FEATURED.map((f) => (

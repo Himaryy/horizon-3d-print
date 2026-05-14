@@ -1,6 +1,8 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight, LucideArrowUpFromLine } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
+import { motion } from 'motion/react'
+import { fadeUp, stagger, staggerItem } from '#/lib/motion'
 
 function FloatingCube({ size = 100 }: { size?: number }) {
   return (
@@ -45,12 +47,11 @@ export function Hero() {
 
   return (
     <section className="w-full mx-auto max-w-360 px-8 pt-8 pb-2">
-      {/* Big gold hero card */}
       <div
         ref={heroRef}
         className="relative overflow-hidden rounded-[28px] pt-16 px-14 pb-14 bg-gold border-[1.5px] border-ink shadow-[6px_6px_0_var(--ink)]"
       >
-        {/* Floating cubes — desktop only */}
+        {/* Floating cubes */}
         <div
           className="absolute top-16 right-20 pointer-events-none hidden lg:block"
           style={{
@@ -70,10 +71,14 @@ export function Hero() {
           <FloatingCube size={80} />
         </div>
 
-        {/* Content */}
-        <div className="relative max-w-3xl">
+        <motion.div
+          className="relative max-w-3xl"
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+        >
           {/* Eyebrow chips */}
-          <div className="flex items-center gap-2 mb-7 flex-wrap">
+          <motion.div variants={fadeUp} className="flex items-center gap-2 mb-7 flex-wrap">
             <span className="chip chip-ink">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold animate-[blink_1.5s_infinite]" />
               Small batch · Zero compromise
@@ -81,10 +86,13 @@ export function Hero() {
             <span className="chip bg-white-warm border-ink">
               ⚡ One printer. Full focus.
             </span>
-          </div>
+          </motion.div>
 
           {/* Headline */}
-          <h1 className="h-display text-[clamp(72px,9vw,132px)] text-ink m-0 leading-[0.9]">
+          <motion.h1
+            variants={fadeUp}
+            className="h-display text-[clamp(72px,9vw,132px)] text-ink m-0 leading-[0.9]"
+          >
             From pixel
             <br />
             to{' '}
@@ -94,33 +102,29 @@ export function Hero() {
             >
               physical.
             </span>
-          </h1>
+          </motion.h1>
 
           {/* Body */}
-          <p className="text-[19px] leading-normal max-w-130 text-ink font-medium mt-7 mb-9">
+          <motion.p
+            variants={fadeUp}
+            className="text-[19px] leading-normal max-w-130 text-ink font-medium mt-7 mb-9"
+          >
             Upload any 3D model, get an instant quote, and we'll print, finish,
             and ship it within 24 hours. Built for makers, businesses, and
             curious humans of every size.
-          </p>
+          </motion.p>
 
-          {/* CTAs + social proof */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <Link
-              to="/custom"
-              className="btn btn-lg btn-accent"
-            >
+          {/* CTAs */}
+          <motion.div variants={fadeUp} className="flex items-center gap-3 flex-wrap">
+            <Link to="/custom" className="btn btn-lg btn-accent">
               <LucideArrowUpFromLine className="size-4" />
               Upload your STL
             </Link>
-            <Link
-              to="/products"
-              className="btn btn-lg bg-ink text-paper border-ink"
-            >
+            <Link to="/products" className="btn btn-lg bg-ink text-paper border-ink">
               Browse Marketplace
               <ArrowRight size={18} className="inline-block ml-1" />
             </Link>
 
-            {/* Avatar stack + count */}
             <div className="flex items-center gap-2.5 ml-2">
               <div className="flex">
                 {AVATAR_COLORS.map((c, i) => (
@@ -137,20 +141,23 @@ export function Hero() {
                 <span className="text-ink-2">printed this month</span>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Stats strip */}
-        <div className="relative mt-16 pt-6 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t-[1.5px] border-dashed border-ink">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="relative mt-16 pt-6 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t-[1.5px] border-dashed border-ink"
+        >
           {STATS.map((s) => (
-            <div key={s.label}>
-              <div className="h-display text-[44px] text-ink leading-none">
-                {s.value}
-              </div>
+            <motion.div key={s.label} variants={staggerItem}>
+              <div className="h-display text-[44px] text-ink leading-none">{s.value}</div>
               <div className="t-eyebrow text-ink-2 mt-1">{s.label}</div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

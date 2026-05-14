@@ -1,15 +1,34 @@
 import { Button } from '#/components/ui/button'
 import { Separator } from '#/components/ui/separator'
 import { formatIDR } from '#/lib/format'
+import type { CartItemType } from '#/lib/types'
 import { useCartStore } from '#/store/cart'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft, ArrowRight, ShoppingCart, Trash2 } from 'lucide-react'
+import { motion } from 'motion/react'
+import { fadeUp, stagger, staggerItem } from '#/lib/motion'
 
 export const Route = createFileRoute('/_home/cart')({ component: CartPage })
 
 function CartPage() {
   const { items, updateQty, removeItem, totalItems, totalPrice } =
     useCartStore()
+
+  function handleDecrease(item: CartItemType) {
+    if (item.qty > 1) {
+      updateQty(item.id, item.material, item.color, item.qty - 1)
+    } else {
+      removeItem(item.id, item.material, item.color)
+    }
+  }
+
+  function handleIncrease(item: CartItemType) {
+    updateQty(item.id, item.material, item.color, item.qty + 1)
+  }
+
+  function handleRemove(item: CartItemType) {
+    removeItem(item.id, item.material, item.color)
+  }
 
   if (items.length === 0) {
     return (
@@ -35,7 +54,12 @@ function CartPage() {
   }
 
   return (
-    <main className="mx-auto max-w-360 px-8 py-10 flex flex-col gap-10">
+    <motion.main
+      variants={fadeUp}
+      initial="hidden"
+      animate="show"
+      className="mx-auto max-w-360 px-8 py-10 flex flex-col gap-10"
+    >
       <div>
         <p className="t-eyebrow mb-2">Cart</p>
         <h1 className="h-display text-[clamp(2rem,5vw,3.5rem)] text-ink leading-[0.92]">
@@ -45,9 +69,15 @@ function CartPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10 items-start">
         {/* Left column - Cart items */}
-        <div className="flex flex-col gap-4">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="flex flex-col gap-4"
+        >
           {items.map((item) => (
-            <div
+            <motion.div
+              variants={staggerItem}
               className="card p-4 flex gap-4 items-start"
               key={`${item.id}-${item.material}-${item.color}`}
             >
@@ -95,16 +125,7 @@ function CartPage() {
                     variant={'outline'}
                     size={'icon'}
                     className="rounded-full w-7 h-7"
-                    onClick={() =>
-                      item.qty > 1
-                        ? updateQty(
-                            item.id,
-                            item.material,
-                            item.color,
-                            item.qty - 1,
-                          )
-                        : removeItem(item.id, item.material, item.color)
-                    }
+                    onClick={() => handleDecrease(item)}
                   >
                     —
                   </Button>
@@ -115,28 +136,21 @@ function CartPage() {
                     variant={'outline'}
                     size={'icon'}
                     className="rounded-full w-7 h-7"
-                    onClick={() =>
-                      updateQty(
-                        item.id,
-                        item.material,
-                        item.color,
-                        item.qty + 1,
-                      )
-                    }
+                    onClick={() => handleIncrease(item)}
                   >
                     +
                   </Button>
                 </div>
 
                 <button
-                  onClick={() => removeItem(item.id, item.material, item.color)}
+                  onClick={() => handleRemove(item)}
                   className="text-fog hover:text-destructive transition-colors"
                   aria-label="Remove Item"
                 >
                   <Trash2 className="size-4" />
                 </button>
               </div>
-            </div>
+            </motion.div>
           ))}
 
           <Link
@@ -146,11 +160,10 @@ function CartPage() {
             <ArrowLeft className="size-3" />
             Continue Shopping
           </Link>
-        </div>
-      </div>
+        </motion.div>
 
-      {/* Right - Order Summary */}
-      <div className="card p-6 flex flex-col gap-4 lg: sticky lg:top-24">
+        {/* Right - Order Summary */}
+        <div className="card p-6 flex flex-col gap-4 lg:sticky lg:top-24">
         <h2 className="h-display text-[22px] text-ink">Order Summary</h2>
         <Separator />
 
@@ -182,7 +195,8 @@ function CartPage() {
         <p className="text-[12px] text-fog text-center">
           Prints shipped within 24h • Made in Indonesia
         </p>
+        </div>
       </div>
-    </main>
+    </motion.main>
   )
 }

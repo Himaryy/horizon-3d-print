@@ -3,14 +3,30 @@ import type { Product } from '#/lib/types'
 import { Link } from '@tanstack/react-router'
 import { Button } from '../ui/button'
 import { ShoppingCart } from 'lucide-react'
+import { useCartStore } from '#/store/cart'
 
 export function ProductCard({
+  id,
   category,
   name,
   price,
   slug,
   image,
 }: Product) {
+  const addItem = useCartStore((s) => s.addItem)
+
+  function handleAddToCart() {
+    addItem({
+      id,
+      slug,
+      name,
+      price,
+      category,
+      image,
+      material: 'PLA',
+      qty: 1,
+    })
+  }
   return (
     <article className="card group flex flex-col overflow-hidden transition-transform duration-200 hover:-translate-y-1.5">
       {/* Image */}
@@ -49,7 +65,10 @@ export function ProductCard({
           <span className="price text-[18px] text-ink">{formatIDR(price)}</span>
         </div>
 
-        <Button className="btn btn-accent w-full mt-3">
+        <Button
+          className="btn btn-accent w-full mt-3"
+          onClick={handleAddToCart}
+        >
           <ShoppingCart className="size-4" />
           Add to Cart
         </Button>

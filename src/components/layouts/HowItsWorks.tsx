@@ -1,5 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
+import { motion } from 'motion/react'
+import { fadeUp, stagger, staggerItem, viewport } from '#/lib/motion'
 
 const STEPS = [
   {
@@ -31,7 +33,13 @@ const STEPS = [
 export function HowItWorks() {
   return (
     <section className="mx-auto max-w-360 px-8">
-      <div className="flex items-baseline justify-between mb-10 flex-wrap gap-4">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewport}
+        className="flex items-baseline justify-between mb-10 flex-wrap gap-4"
+      >
         <div>
           <p className="t-eyebrow mb-3">How it works</p>
           <h2 className="h-display text-[clamp(2.5rem,6vw,5rem)] text-ink m-0">
@@ -49,30 +57,30 @@ export function HowItWorks() {
           <span>Get a Quote</span>
           <ArrowRight className="size-4 shrink-0 -rotate-45" />
         </Link>
-      </div>
+      </motion.div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        whileInView="show"
+        viewport={viewport}
+        className="grid gap-5 lg:grid-cols-3"
+      >
         {STEPS.map((step) => (
-          <div
+          <motion.div
             key={step.n}
+            variants={staggerItem}
             className={`${step.bg} ${step.text} ${step.border} border-[1.5px] rounded-[22px] p-7 min-h-90 flex flex-col relative overflow-hidden`}
           >
             <div className="t-eyebrow opacity-70">STEP {step.n}</div>
-
-            {/* Large step number watermark */}
             <div className="h-display text-[120px] leading-none select-none opacity-10 my-4">
               {step.n}
             </div>
-
-            <h3 className="h-display text-[48px] m-0 mb-2 leading-none">
-              {step.title}
-            </h3>
-            <p className="text-[14.5px] leading-relaxed m-0 opacity-90">
-              {step.body}
-            </p>
-          </div>
+            <h3 className="h-display text-[48px] m-0 mb-2 leading-none">{step.title}</h3>
+            <p className="text-[14.5px] leading-relaxed m-0 opacity-90">{step.body}</p>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   )
 }

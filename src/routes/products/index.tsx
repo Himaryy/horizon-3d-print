@@ -2,8 +2,10 @@ import { ProductCard } from '#/components/product/ProductCard'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
 import { MOCK_PRODUCTS } from '#/lib/mock-data'
+import { fadeUp, stagger, staggerItem, viewport } from '#/lib/motion'
 import { createFileRoute } from '@tanstack/react-router'
 import { Box, Search } from 'lucide-react'
+import { motion } from 'motion/react'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/products/')({ component: ProductsPage })
@@ -30,7 +32,12 @@ function ProductsPage() {
     <main className="flex flex-col gap-10 pb-24">
       {/* Hero card */}
       <section className="mx-auto w-full max-w-360 px-8 pt-8">
-        <div className="relative overflow-hidden rounded-[28px] bg-sky border-[1.5px] border-ink shadow-[6px_6px_0_var(--ink)] px-10 py-12 lg:px-14 lg:py-16">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="show"
+          className="relative overflow-hidden rounded-[28px] bg-sky border-[1.5px] border-ink shadow-[6px_6px_0_var(--ink)] px-10 py-12 lg:px-14 lg:py-16"
+        >
           {/* Decorative cube — top right */}
           <div className="absolute -top-3 -right-6 opacity-[0.15] pointer-events-none hidden lg:block">
             <Box className="size-72 text-ink" strokeWidth={0.75} />
@@ -81,7 +88,7 @@ function ProductsPage() {
               </Button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Filter + grid */}
@@ -122,18 +129,25 @@ function ProductsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={viewport}
+          className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4"
+        >
           {filtered.map((p) => (
-            <ProductCard
-              key={p.id}
-              category={p.category}
-              name={p.name}
-              price={p.price}
-              slug={p.slug}
-              id={p.id}
-            />
+            <motion.div key={p.id} variants={staggerItem}>
+              <ProductCard
+                category={p.category}
+                name={p.name}
+                price={p.price}
+                slug={p.slug}
+                id={p.id}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
     </main>
   )
