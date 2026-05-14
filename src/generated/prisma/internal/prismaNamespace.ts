@@ -1828,7 +1828,12 @@ export type ProductVariantScalarFieldEnum = (typeof ProductVariantScalarFieldEnu
 
 export const OrderScalarFieldEnum = {
   id: 'id',
+  invoiceNumber: 'invoiceNumber',
+  source: 'source',
+  externalOrderId: 'externalOrderId',
   userId: 'userId',
+  customerName: 'customerName',
+  customerEmail: 'customerEmail',
   status: 'status',
   subtotal: 'subtotal',
   shippingCost: 'shippingCost',
@@ -1841,6 +1846,7 @@ export const OrderScalarFieldEnum = {
   shippingAddress: 'shippingAddress',
   trackingNumber: 'trackingNumber',
   trackingUrl: 'trackingUrl',
+  courier: 'courier',
   notes: 'notes',
   adminNotes: 'adminNotes',
   createdAt: 'createdAt',
@@ -2092,6 +2098,20 @@ export type EnumProductCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$
  * Reference to a field of type 'ProductCategory[]'
  */
 export type ListEnumProductCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OrderSource'
+ */
+export type EnumOrderSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderSource'>
+    
+
+
+/**
+ * Reference to a field of type 'OrderSource[]'
+ */
+export type ListEnumOrderSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderSource[]'>
     
 
 

@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
+import { useMutation } from '@tanstack/react-query'
 import { getAdminProductByIdFn, updateProductFn } from '#/data/product'
 import { toast } from 'sonner'
 import { Button, buttonVariants } from '#/components/ui/button'
@@ -16,6 +17,7 @@ import {
   SelectValue,
 } from '#/components/ui/select'
 import { updateProductSchema } from '#/schemas/product-schemas'
+import type { UpdateProductSchema } from '#/schemas/product-schemas'
 
 const toSlug = (str: string) =>
   str
@@ -35,6 +37,16 @@ function UpdateProductPage() {
   const { id } = Route.useParams()
   const navigate = useNavigate()
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: (value: UpdateProductSchema) =>
+      updateProductFn({ data: value }),
+    onSuccess: () => {
+      toast.success('Product updated')
+      navigate({ to: '/admin/products', search: { page: 1 } })
+    },
+    onError: () => toast.error('Failed to update product'),
+  })
+
   const form = useForm({
     defaultValues: {
       id,
@@ -51,18 +63,8 @@ function UpdateProductPage() {
       tokopediaUrl: product.tokopediaUrl ?? '',
       shopeeUrl: product.shopeeUrl ?? '',
     },
-    validators: {
-      onSubmit: updateProductSchema,
-    },
-    onSubmit: async ({ value }) => {
-      try {
-        await updateProductFn({ data: value })
-        toast.success('Product updated')
-        navigate({ to: '/admin/products', search: { page: 1 } })
-      } catch {
-        toast.error('Failed to update product')
-      }
-    },
+    validators: { onSubmit: updateProductSchema },
+    onSubmit: ({ value }) => mutate(value),
   })
 
   return (
@@ -329,18 +331,13 @@ function UpdateProductPage() {
             Cancel
           </Link>
 
-          <form.Subscribe
-            selector={(state) => state.isSubmitting}
-            children={(isSubmitting) => (
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-gold hover:bg-gold/90 cursor-pointer"
-              >
-                {isSubmitting ? 'Saving...' : 'Save Changes'}
-              </Button>
-            )}
-          />
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="bg-gold hover:bg-gold/90 cursor-pointer"
+          >
+            {isPending ? 'Saving...' : 'Save Changes'}
+          </Button>
         </div>
       </form>
     </div>

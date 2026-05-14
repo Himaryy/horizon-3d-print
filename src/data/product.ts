@@ -193,6 +193,16 @@ export const softDeleteProductFn = createServerFn({ method: 'POST' })
 
 type AdminProductSearch = ValidateSearchProductSchema
 
+export const getProductsForSelectFn = createServerFn({ method: 'GET' })
+  .middleware([requireAdminFnMiddleware])
+  .handler(async () => {
+    return prisma.product.findMany({
+      where: { isPublished: true, deletedAt: null },
+      select: { id: true, name: true, price: true },
+      orderBy: { name: 'asc' },
+    })
+  })
+
 export const adminProductQueryOptions = (search: AdminProductSearch) =>
   queryOptions({
     queryKey: ['admin', 'products', search],

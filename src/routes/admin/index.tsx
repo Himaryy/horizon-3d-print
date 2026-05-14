@@ -1,5 +1,7 @@
-﻿import { getDashboardStatsFn } from '#/data/dashboard'
+﻿/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+import { getDashboardStatsFn } from '#/data/dashboard'
 import { formatIDR } from '#/lib/format'
+import { STATUS_STYLE, STATUS_LABEL } from '#/lib/order'
 import { cn } from '#/lib/utils'
 import {
   ChartContainer,
@@ -12,7 +14,7 @@ import {
   Banknote,
   Clock,
   Package,
-  ShoppingCart
+  ShoppingCart,
 } from 'lucide-react'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 
@@ -20,28 +22,6 @@ export const Route = createFileRoute('/admin/')({
   loader: () => getDashboardStatsFn(),
   component: RouteComponent,
 })
-
-const ORDER_STATUS_STYLE: Record<string, string> = {
-  PENDING_PAYMENT: 'chip',
-  PAID: 'chip chip-sky',
-  PROCESSING: 'chip chip-sky',
-  PRINTING: 'chip chip-gold',
-  SHIPPED: 'chip chip-gold',
-  DELIVERED: 'chip chip-ink',
-  CANCELLED: 'chip bg-red-100 text-red-700',
-  REFUNDED: 'chip',
-}
-
-const ORDER_STATUS_LABEL: Record<string, string> = {
-  PENDING_PAYMENT: 'Pending',
-  PAID: 'Paid',
-  PROCESSING: 'Processing',
-  PRINTING: 'Printing',
-  SHIPPED: 'Shipped',
-  DELIVERED: 'Delivered',
-  CANCELLED: 'Cancelled',
-  REFUNDED: 'Refunded',
-}
 
 const chartConfig = {
   revenue: {
@@ -80,15 +60,15 @@ function RouteComponent() {
       label: 'Pending Orders',
       value: String(pendingOrders),
       icon: Clock,
-      colorText: 'text-amber-500',
-      colorBg: 'bg-amber-500/10',
+      colorText: 'text-gold',
+      colorBg: 'bg-gold/10',
     },
     {
       label: 'Revenue',
       value: formatIDR(revenue),
       icon: Banknote,
-      colorText: 'text-gold',
-      colorBg: 'bg-gold/10',
+      colorText: 'text-sky',
+      colorBg: 'bg-sky/10',
     },
   ]
 
@@ -162,6 +142,7 @@ function RouteComponent() {
             <p className="t-eyebrow">Recent Orders</p>
             <Link
               to="/admin/orders"
+              search={{ page: 1 }}
               className="text-xs text-sky hover:underline flex items-center gap-1"
             >
               View all <ArrowRight className="size-3" />
@@ -179,15 +160,15 @@ function RouteComponent() {
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-ink">
-                      {order.user.name}
+                      {order.user?.name ?? order.customerName ?? '-'}
                     </p>
                     <p className="truncate text-xs text-fog">
-                      {order.user.email}
+                      {order.user?.email ?? order.customerEmail ?? '-'}
                     </p>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1">
-                    <span className={cn(ORDER_STATUS_STYLE[order.status])}>
-                      {ORDER_STATUS_LABEL[order.status]}
+                    <span className={cn(STATUS_STYLE[order.status])}>
+                      {STATUS_LABEL[order.status]}
                     </span>
                     <p className="font-mono text-xs text-ink">
                       {formatIDR(order.total)}

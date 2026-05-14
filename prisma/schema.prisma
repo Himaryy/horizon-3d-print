@@ -159,9 +159,20 @@ enum OrderStatus {
   REFUNDED
 }
 
+enum OrderSource {
+  WEBSITE
+  TOKOPEDIA
+  SHOPEE
+}
+
 model Order {
   id               String      @id @default(cuid())
-  userId           String      @map("user_id")
+  invoiceNumber    String      @unique @map("invoice_number")
+  source           OrderSource @default(WEBSITE) @map("source")
+  externalOrderId  String?     @map("external_order_id")
+  userId           String?     @map("user_id")
+  customerName     String?     @map("customer_name")
+  customerEmail    String?     @map("customer_email")
   status           OrderStatus @default(PENDING_PAYMENT)
   subtotal         Int
   shippingCost     Int         @default(0) @map("shipping_cost")
@@ -174,12 +185,13 @@ model Order {
   shippingAddress  Json        @map("shipping_address")
   trackingNumber   String?     @map("tracking_number")
   trackingUrl      String?     @map("tracking_url")
+  courier          String?
   notes            String?
   adminNotes       String?     @map("admin_notes")
   createdAt        DateTime    @default(now()) @map("created_at")
   updatedAt        DateTime    @updatedAt @map("updated_at")
 
-  user  User        @relation(fields: [userId], references: [id])
+  user  User?       @relation(fields: [userId], references: [id])
   items OrderItem[]
 
   @@map("order")

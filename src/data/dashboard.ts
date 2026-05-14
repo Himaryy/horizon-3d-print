@@ -53,6 +53,8 @@ export const getDashboardStatsFn = createServerFn({ method: 'GET' })
           status: true,
           total: true,
           createdAt: true,
+          customerName: true,
+          customerEmail: true,
           user: { select: { email: true, name: true } },
         },
       }),

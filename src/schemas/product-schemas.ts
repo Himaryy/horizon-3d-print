@@ -34,6 +34,7 @@ export type CreateProductSchema = z.infer<typeof createProductSchema>
 export const updateProductSchema = productBaseSchema.extend({
   id: z.string().min(1),
 })
+export type UpdateProductSchema = z.infer<typeof updateProductSchema>
 
 export const productIdSchema = z.object({
   id: z.string().min(1),

@@ -13,7 +13,7 @@ import {
   useSuspenseQuery,
 } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { Loader2, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import React, { useRef } from 'react'
 import { toast } from 'sonner'
 import {
@@ -64,6 +64,7 @@ function AdminProductPage() {
 
   const {
     data: { products, pages },
+    isFetching,
   } = useSuspenseQuery(adminProductQueryOptions({ page, search, category }))
 
   const { mutate: togglePublish } = useMutation({
@@ -126,39 +127,41 @@ function AdminProductPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="space-y-3">
         <form onSubmit={handleSearch} className="flex gap-2">
           <Input
             ref={searchRef}
             defaultValue={search}
             placeholder="Search products..."
-            className="w-56 rounded-full"
+            className="flex-1 rounded-full"
           />
           <Button
             type="submit"
             variant="outline"
             size="icon"
-            className="rounded-full"
+            className="rounded-full shrink-0"
           >
             <Search className="size-4" />
           </Button>
         </form>
 
-        <div className="flex gap-2">
-          {CATEGORY_FILTERS.map((f) => (
-            <button
-              key={f.label}
-              type="button"
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({ ...prev, category: f.value, page: 1 }),
-                })
-              }
-              className={cn('chip', category === f.value && 'chip-ink')}
-            >
-              {f.label}
-            </button>
-          ))}
+        <div className="overflow-x-auto pb-1">
+          <div className="flex gap-2 w-max">
+            {CATEGORY_FILTERS.map((f) => (
+              <button
+                key={f.label}
+                type="button"
+                onClick={() =>
+                  navigate({
+                    search: (prev) => ({ ...prev, category: f.value, page: 1 }),
+                  })
+                }
+                className={cn('chip', category === f.value && 'chip-ink')}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -176,7 +179,13 @@ function AdminProductPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.length === 0 ? (
+            {isFetching ? (
+              <TableRow>
+                <TableCell colSpan={6} className="py-12 text-center">
+                  <Loader2 className="size-5 animate-spin text-fog mx-auto" />
+                </TableCell>
+              </TableRow>
+            ) : products.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="py-12 text-center text-fog">
                   No products found.

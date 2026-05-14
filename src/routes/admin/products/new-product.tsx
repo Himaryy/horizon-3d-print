@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
+import { useMutation } from '@tanstack/react-query'
 import { createProductSchema } from '#/schemas/product-schemas'
+import type { CreateProductSchema } from '#/schemas/product-schemas'
 import { createProductFn } from '#/data/product'
 import { toast } from 'sonner'
 import { Button, buttonVariants } from '#/components/ui/button'
@@ -32,6 +34,16 @@ export const Route = createFileRoute('/admin/products/new-product')({
 function NewProductPage() {
   const navigate = useNavigate()
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: (value: CreateProductSchema) =>
+      createProductFn({ data: value }),
+    onSuccess: () => {
+      toast.success('Product created')
+      navigate({ to: '/admin/products', search: { page: 1 } })
+    },
+    onError: () => toast.error('Failed to create product'),
+  })
+
   const form = useForm({
     defaultValues: {
       slug: '',
@@ -47,18 +59,8 @@ function NewProductPage() {
       tokopediaUrl: '',
       shopeeUrl: '',
     },
-    validators: {
-      onSubmit: createProductSchema,
-    },
-    onSubmit: async ({ value }) => {
-      try {
-        await createProductFn({ data: value })
-        toast.success('Product created')
-        navigate({ to: '/admin/products', search: { page: 1 } })
-      } catch {
-        toast.error('Failed to create product')
-      }
-    },
+    validators: { onSubmit: createProductSchema },
+    onSubmit: ({ value }) => mutate(value),
   })
 
   return (
@@ -329,18 +331,13 @@ function NewProductPage() {
             Cancel
           </Link>
 
-          <form.Subscribe
-            selector={(state) => state.isSubmitting}
-            children={(isSubmitting) => (
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-gold hover:bg-gold/90 cursor-pointer"
-              >
-                {isSubmitting ? 'Creating...' : 'Create'}
-              </Button>
-            )}
-          />
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="bg-gold hover:bg-gold/90 cursor-pointer"
+          >
+            {isPending ? 'Creating...' : 'Create'}
+          </Button>
         </div>
       </form>
     </div>

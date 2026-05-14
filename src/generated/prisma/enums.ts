@@ -31,6 +31,15 @@ export const OrderStatus = {
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 
+export const OrderSource = {
+  WEBSITE: 'WEBSITE',
+  TOKOPEDIA: 'TOKOPEDIA',
+  SHOPEE: 'SHOPEE'
+} as const
+
+export type OrderSource = (typeof OrderSource)[keyof typeof OrderSource]
+
+
 export const CustomOrderStatus = {
   NEW: 'NEW',
   UNDER_REVIEW: 'UNDER_REVIEW',

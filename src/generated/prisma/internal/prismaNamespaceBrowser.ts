@@ -197,7 +197,12 @@ export type ProductVariantScalarFieldEnum = (typeof ProductVariantScalarFieldEnu
 
 export const OrderScalarFieldEnum = {
   id: 'id',
+  invoiceNumber: 'invoiceNumber',
+  source: 'source',
+  externalOrderId: 'externalOrderId',
   userId: 'userId',
+  customerName: 'customerName',
+  customerEmail: 'customerEmail',
   status: 'status',
   subtotal: 'subtotal',
   shippingCost: 'shippingCost',
@@ -210,6 +215,7 @@ export const OrderScalarFieldEnum = {
   shippingAddress: 'shippingAddress',
   trackingNumber: 'trackingNumber',
   trackingUrl: 'trackingUrl',
+  courier: 'courier',
   notes: 'notes',
   adminNotes: 'adminNotes',
   createdAt: 'createdAt',
