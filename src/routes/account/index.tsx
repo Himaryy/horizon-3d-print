@@ -95,7 +95,12 @@ function AccountPage() {
   return (
     <main className="mx-auto max-w-360 px-8 py-10 flex flex-col gap-10 pb-24">
       {/* Header */}
-      <motion.div variants={fadeUp} initial="hidden" animate="show" className="flex items-center gap-5">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        animate="show"
+        className="flex items-center gap-5"
+      >
         <Avatar className="size-16 border-2 border-ink">
           <AvatarImage src={user.image || undefined} alt={user.name} />
           <AvatarFallback className="text-xl font-bold text-paper bg-sky">

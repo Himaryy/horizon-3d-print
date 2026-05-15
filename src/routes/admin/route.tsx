@@ -36,7 +36,7 @@ const navItems = [
   { to: '/admin/products', label: 'Products', icon: Package },
   { to: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { to: '/admin/custom-orders', label: 'Custom Orders', icon: Wand2 },
-  { to: '/admin/users', label: 'Users', icon: Users },
+  { to: '/admin/customers', label: 'Customers', icon: Users },
 ]
 
 function SidebarContent({ onNavClick }: { onNavClick?: () => void }) {

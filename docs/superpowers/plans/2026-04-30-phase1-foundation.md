@@ -51,6 +51,7 @@ app.config.ts           # TanStack Start / Vinxi config
 ## Task 1: Scaffold TanStack Start Project
 
 **Files:**
+
 - Create: `app.config.ts`
 - Create: `src/router.tsx`
 - Create: `src/client.tsx`
@@ -134,6 +135,7 @@ git commit -m "feat: scaffold TanStack Start project with all dependencies"
 ## Task 2: Prisma Schema
 
 **Files:**
+
 - Create: `prisma/schema.prisma`
 
 - [ ] **Step 1: Initialize Prisma**
@@ -510,6 +512,7 @@ git commit -m "feat: full Prisma schema with all models and inline comments"
 ## Task 3: Prisma Client Singleton
 
 **Files:**
+
 - Create: `src/lib/db.ts`
 
 - [ ] **Step 1: Write singleton**
@@ -521,9 +524,12 @@ import { PrismaClient } from '@prisma/client'
 // Prevent multiple PrismaClient instances in dev (hot reload creates new modules)
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
-export const db = globalForPrisma.prisma ?? new PrismaClient({
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error'] : ['error'],
-})
+export const db =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log:
+      process.env.NODE_ENV === 'development' ? ['query', 'error'] : ['error'],
+  })
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 ```
@@ -563,6 +569,7 @@ git commit -m "feat: Prisma client singleton"
 ## Task 4: Better Auth Setup
 
 **Files:**
+
 - Create: `src/lib/auth.ts`
 - Create: `src/lib/auth-client.ts`
 - Create: `src/routes/api/auth/$.ts`
@@ -591,7 +598,7 @@ export const auth = betterAuth({
   },
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days in seconds
-    updateAge: 60 * 60 * 24,       // refresh session daily
+    updateAge: 60 * 60 * 24, // refresh session daily
   },
   user: {
     additionalFields: {
@@ -653,6 +660,7 @@ git commit -m "feat: Better Auth setup with email/password and Google OAuth"
 ## Task 5: Tailwind v4 + Design Tokens
 
 **Files:**
+
 - Modify: `app.config.ts`
 - Create: `src/styles/globals.css`
 
@@ -672,10 +680,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   vite: {
-    plugins: [
-      tsConfigPaths({ projects: ['./tsconfig.json'] }),
-      tailwindcss(),
-    ],
+    plugins: [tsConfigPaths({ projects: ['./tsconfig.json'] }), tailwindcss()],
   },
 })
 ```
@@ -684,7 +689,7 @@ export default defineConfig({
 
 ```css
 /* src/styles/globals.css */
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* Brand palette — Palette B: Blue + Yellow */
@@ -709,15 +714,21 @@ export default defineConfig({
 }
 
 /* Card tilt utility — applied alternately on product grids */
-.card-tilt-left  { transform: rotate(-1deg); }
-.card-tilt-right { transform: rotate(0.8deg); }
+.card-tilt-left {
+  transform: rotate(-1deg);
+}
+.card-tilt-right {
+  transform: rotate(0.8deg);
+}
 
 /* Chunky button base */
 .btn-chunky {
   font-weight: 900;
   border: 2px solid #111111;
   border-radius: 8px;
-  transition: transform 0.1s, box-shadow 0.1s;
+  transition:
+    transform 0.1s,
+    box-shadow 0.1s;
 }
 .btn-chunky:hover {
   transform: translate(-2px, -2px);
@@ -732,6 +743,7 @@ export default defineConfig({
 - [ ] **Step 4: Import globals in root route (placeholder — root route built in Phase 2)**
 
 Note: import will be added in `src/routes/__root.tsx` in Phase 2:
+
 ```typescript
 import '~/styles/globals.css'
 ```
@@ -748,6 +760,7 @@ git commit -m "feat: Tailwind v4 with brand design tokens and card styles"
 ## Task 6: i18n Setup
 
 **Files:**
+
 - Create: `src/i18n.ts`
 - Create: `src/locales/id/common.json`
 - Create: `src/locales/id/products.json`
@@ -794,16 +807,16 @@ i18n
         chatbot: enChatbot,
       },
     },
-    fallbackLng: 'id',          // default Indonesian
+    fallbackLng: 'id', // default Indonesian
     defaultNS: 'common',
     detection: {
       order: ['cookie', 'navigator'],
       caches: ['cookie'],
-      cookieMinutes: 525600,    // 1 year
+      cookieMinutes: 525600, // 1 year
       cookieSameSite: 'strict',
     },
     interpolation: {
-      escapeValue: false,       // React handles XSS
+      escapeValue: false, // React handles XSS
     },
   })
 

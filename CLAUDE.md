@@ -28,12 +28,12 @@ All `db:*` commands load `.env.local` via `dotenv-cli`. Required env vars: `DATA
 
 Routes live in `src/routes/`. The router plugin auto-generates `src/routeTree.gen.ts` on save — never edit it manually.
 
-| Pattern | Meaning |
-|---|---|
-| `__root.tsx` | Root layout: `shellComponent` wraps ALL routes with `<Navbar>`, `<Footer>` |
-| `_auth/route.tsx` | Pathless layout group for `/login`, `/register` (centered blue-wash bg) |
-| `_home/route.tsx` | Pathless layout group for `/`, `/about`, `/custom` (just `<Outlet />`) |
-| `products/$slug.tsx` | Dynamic segment |
+| Pattern              | Meaning                                                                    |
+| -------------------- | -------------------------------------------------------------------------- |
+| `__root.tsx`         | Root layout: `shellComponent` wraps ALL routes with `<Navbar>`, `<Footer>` |
+| `_auth/route.tsx`    | Pathless layout group for `/login`, `/register` (centered blue-wash bg)    |
+| `_home/route.tsx`    | Pathless layout group for `/`, `/about`, `/custom` (just `<Outlet />`)     |
+| `products/$slug.tsx` | Dynamic segment                                                            |
 
 Route files export `const Route = createFileRoute('/<path>')({ component })`. The shell is `shellComponent`, not `component`, in `__root.tsx`.
 
@@ -62,6 +62,7 @@ Use `createServerFn` from `@tanstack/react-start` for any server-side data acces
 No `tailwind.config.*`. Config is entirely in `src/styles.css` via `@theme inline` and `:root` custom properties.
 
 **Canonical Tailwind v4 class forms** (not arbitrary values):
+
 - CSS vars: `text-(--ink-2)`, `bg-(--paper)` — not `text-[var(--ink-2)]`
 - Animations: `animate-[blink_2s_infinite]` — not `[animation:blink...]`
 - Font stretch: `font-stretch-75%` — not `[font-stretch:75%]`
@@ -85,6 +86,7 @@ See `DESIGN.md` (authoritative) and `PRODUCT.md` (brand/product context). Key ru
 shadcn/ui for ALL interactive components (Button, Dropdown, Avatar, Dialog, etc.). Raw Radix or hand-rolled HTML for interactive elements is not the pattern here.
 
 Components live in `src/components/`:
+
 - `layouts/` — Navbar, Footer, Hero (page-level shells)
 - `ui/` — shadcn primitives (Avatar, DropdownMenu, etc.)
 - `product/` — ProductCard, ProductGallery, etc. (to be created)

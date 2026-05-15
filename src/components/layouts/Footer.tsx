@@ -80,7 +80,10 @@ export function Footer() {
             <ul className="flex flex-col gap-2 list-none p-0 m-0">
               {col.links.map((link) => (
                 <li key={link}>
-                  <a href="#" className="text-sm text-paper/60 transition-colors hover:text-paper no-underline">
+                  <a
+                    href="#"
+                    className="text-sm text-paper/60 transition-colors hover:text-paper no-underline"
+                  >
                     {link}
                   </a>
                 </li>

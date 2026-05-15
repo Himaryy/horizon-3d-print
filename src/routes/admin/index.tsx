@@ -1,5 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { getDashboardStatsFn } from '#/data/dashboard'
+﻿import { getDashboardStatsFn } from '#/data/dashboard'
 import { formatIDR } from '#/lib/format'
 import { STATUS_STYLE, STATUS_LABEL } from '#/lib/order'
 import { cn } from '#/lib/utils'
@@ -192,6 +191,7 @@ function RouteComponent() {
               )}
             </p>
             <Link
+              search={{ page: 1 }}
               to="/admin/custom-orders"
               className="text-xs text-sky hover:underline flex items-center gap-1"
             >

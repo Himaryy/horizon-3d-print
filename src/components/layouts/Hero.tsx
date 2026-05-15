@@ -78,7 +78,10 @@ export function Hero() {
           animate="show"
         >
           {/* Eyebrow chips */}
-          <motion.div variants={fadeUp} className="flex items-center gap-2 mb-7 flex-wrap">
+          <motion.div
+            variants={fadeUp}
+            className="flex items-center gap-2 mb-7 flex-wrap"
+          >
             <span className="chip chip-ink">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold animate-[blink_1.5s_infinite]" />
               Small batch · Zero compromise
@@ -115,12 +118,18 @@ export function Hero() {
           </motion.p>
 
           {/* CTAs */}
-          <motion.div variants={fadeUp} className="flex items-center gap-3 flex-wrap">
+          <motion.div
+            variants={fadeUp}
+            className="flex items-center gap-3 flex-wrap"
+          >
             <Link to="/custom" className="btn btn-lg btn-accent">
               <LucideArrowUpFromLine className="size-4" />
               Upload your STL
             </Link>
-            <Link to="/products" className="btn btn-lg bg-ink text-paper border-ink">
+            <Link
+              to="/products"
+              className="btn btn-lg bg-ink text-paper border-ink"
+            >
               Browse Marketplace
               <ArrowRight size={18} className="inline-block ml-1" />
             </Link>
@@ -153,7 +162,9 @@ export function Hero() {
         >
           {STATS.map((s) => (
             <motion.div key={s.label} variants={staggerItem}>
-              <div className="h-display text-[44px] text-ink leading-none">{s.value}</div>
+              <div className="h-display text-[44px] text-ink leading-none">
+                {s.value}
+              </div>
               <div className="t-eyebrow text-ink-2 mt-1">{s.label}</div>
             </motion.div>
           ))}

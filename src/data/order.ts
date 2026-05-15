@@ -68,10 +68,32 @@ export const getAdminOrdersFn = createServerFn({ method: 'GET' })
       ...(data.search
         ? {
             OR: [
-              { invoiceNumber: { contains: data.search, mode: 'insensitive' as const } },
-              { externalOrderId: { contains: data.search, mode: 'insensitive' as const } },
-              { customerName: { contains: data.search, mode: 'insensitive' as const } },
-              { user: { email: { contains: data.search, mode: 'insensitive' as const } } },
+              {
+                invoiceNumber: {
+                  contains: data.search,
+                  mode: 'insensitive' as const,
+                },
+              },
+              {
+                externalOrderId: {
+                  contains: data.search,
+                  mode: 'insensitive' as const,
+                },
+              },
+              {
+                customerName: {
+                  contains: data.search,
+                  mode: 'insensitive' as const,
+                },
+              },
+              {
+                user: {
+                  email: {
+                    contains: data.search,
+                    mode: 'insensitive' as const,
+                  },
+                },
+              },
             ],
           }
         : {}),
@@ -156,7 +178,9 @@ export const updateOrderStatusFn = createServerFn({ method: 'POST' })
         ...(data.courier ? { courier: data.courier } : {}),
         ...(data.trackingNumber ? { trackingNumber: data.trackingNumber } : {}),
         ...(data.trackingUrl ? { trackingUrl: data.trackingUrl } : {}),
-        ...(data.adminNotes !== undefined ? { adminNotes: data.adminNotes } : {}),
+        ...(data.adminNotes !== undefined
+          ? { adminNotes: data.adminNotes }
+          : {}),
         ...(data.status === 'PAID' ? { paidAt: new Date() } : {}),
       },
       select: { id: true, status: true },

@@ -55,7 +55,7 @@ function UpdateProductPage() {
       desc: product.desc,
       price: product.price,
       stock: product.stock,
-      category: product.category as 'READY_MADE' | 'CUSTOM_BASE',
+      category: product.category,
       isPublished: product.isPublished,
       isFeatured: product.isFeatured,
       modelUrl: product.modelUrl ?? '',
@@ -147,7 +147,7 @@ function UpdateProductPage() {
                     <Select
                       value={field.state.value}
                       onValueChange={(v) =>
-                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                         
                         field.handleChange(v as 'READY_MADE' | 'CUSTOM_BASE')
                       }
                     >

@@ -9,12 +9,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '#/components/ui/tooltip'
+import { submitCustomOrderFn } from '#/data/custom-orders'
 import { authClient } from '#/lib/auth-client'
 import { formatIDR } from '#/lib/format'
 import { fadeUp, stagger, staggerItem, viewport } from '#/lib/motion'
 import type { CustomOrderFormDataProps } from '#/lib/types'
+import { useMutation } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { ImagePlus, Send } from 'lucide-react'
+import { CheckCircle, ImagePlus, Loader2, Send } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useState } from 'react'
 
@@ -39,6 +41,16 @@ const FILAMENT_COLORS = [
 function CustomPage() {
   const { data: session } = authClient.useSession()
   const user = session?.user
+
+  const {
+    mutate: submit,
+    isPending,
+    isSuccess,
+    isError,
+  } = useMutation({
+    mutationFn: (data: Parameters<typeof submitCustomOrderFn>[0]['data']) =>
+      submitCustomOrderFn({ data }),
+  })
 
   const [form, setForm] = useState<CustomOrderFormDataProps>({
     description: '',
@@ -72,8 +84,24 @@ function CustomPage() {
   }
 
   function handleSubmit() {
-    // TODO: wire to serverFn → save CustomOrderRequest to DB
-    console.log('submit', form)
+    const colorNoteParts: string[] = []
+    if (form.colors.length > 0) colorNoteParts.push(form.colors.join(', '))
+    if (form.colorNote) colorNoteParts.push(form.colorNote)
+    const combinedColorNote = colorNoteParts.join(' — ') || undefined
+
+    submit({
+      description: form.description,
+      size: form.size || undefined,
+      colorNote: combinedColorNote,
+      budgetMin: form.budgetMin,
+      budgetMax: form.budgetMax,
+      ...(user
+        ? { userId: user.id }
+        : {
+            guestName: form.guestName || undefined,
+            guestEmail: form.guestEmail || undefined,
+          }),
+    })
   }
 
   return (
@@ -140,7 +168,9 @@ function CustomPage() {
             <div className="flex flex-col gap-2">
               <Label className="t-eyebrow">
                 Reference Images{' '}
-                <span className="text-fog normal-case font-normal">(optional)</span>
+                <span className="text-fog normal-case font-normal">
+                  (optional)
+                </span>
               </Label>
               <div className="card-soft rounded-[14px] border-dashed! p-8 flex flex-col items-center gap-3 cursor-pointer hover:border-ink transition-colors">
                 <ImagePlus className="size-8 text-fog" strokeWidth={1.5} />
@@ -157,14 +187,18 @@ function CustomPage() {
           <motion.div variants={staggerItem} className="flex flex-col gap-4">
             <div>
               <p className="t-eyebrow text-fog mb-1">Step 2</p>
-              <h2 className="h-display text-[24px] text-ink">Options & budget</h2>
+              <h2 className="h-display text-[24px] text-ink">
+                Options & budget
+              </h2>
             </div>
             <Separator />
 
             <div className="flex flex-col gap-3">
               <Label className="t-eyebrow">
                 Colors{' '}
-                <span className="text-fog normal-case font-normal">— pick all that apply</span>
+                <span className="text-fog normal-case font-normal">
+                  — pick all that apply
+                </span>
               </Label>
               <div className="flex flex-wrap gap-3">
                 {FILAMENT_COLORS.map((c) => {
@@ -288,18 +322,39 @@ function CustomPage() {
 
           <Separator />
 
-          <Button
-            className="btn btn-accent w-full h-12 text-[15px]"
-            onClick={handleSubmit}
-            disabled={!form.description}
-          >
-            <Send className="size-4" />
-            Submit Quote Request
-          </Button>
+          {isSuccess ? (
+            <div className="flex flex-col items-center gap-3 py-2">
+              <CheckCircle className="size-8 text-green-600" />
+              <p className="text-[14px] text-ink text-center font-medium">
+                Request submitted! We'll reply within 24 hours.
+              </p>
+            </div>
+          ) : (
+            <>
+              <Button
+                className="btn btn-accent w-full h-12 text-[15px]"
+                onClick={handleSubmit}
+                disabled={!form.description || isPending}
+              >
+                {isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Send className="size-4" />
+                )}
+                {isPending ? 'Submitting…' : 'Submit Quote Request'}
+              </Button>
 
-          <p className="text-[12px] text-fog text-center">
-            We'll reply within 24 hours · No payment now
-          </p>
+              {isError && (
+                <p className="text-[12px] text-red-600 text-center">
+                  Something went wrong. Please try again.
+                </p>
+              )}
+
+              <p className="text-[12px] text-fog text-center">
+                We'll reply within 24 hours · No payment now
+              </p>
+            </>
+          )}
         </div>
       </div>
     </main>

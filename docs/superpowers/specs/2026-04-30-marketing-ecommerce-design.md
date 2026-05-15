@@ -12,6 +12,7 @@
 Website for a 3D printing startup selling playful, articulated physical products (poseable figures, transformable toys, mechanical gadgets). Two product types: ready-made catalog and custom-order (customer describes idea, team prints it).
 
 Website goals:
+
 - Showcase products with video + interactive 3D model viewer
 - Allow direct purchase via website
 - Provide links to Tokopedia/Shopee listings per product
@@ -23,19 +24,19 @@ Website goals:
 
 ## 2. Tech Stack
 
-| Concern | Tool | Notes |
-|---|---|---|
-| Framework | TanStack Start | SSR + server functions, file-based routing |
-| ORM | Prisma | With inline field comments on all models |
-| DB (dev) | Neon | Free tier PostgreSQL, serverless |
-| DB (prod) | PostgreSQL on VPS | Same server as app, pg_dump cron for backups |
-| Storage | Cloudinary | Free tier — images, videos, `.glb` 3D models |
-| Auth | Better Auth | Session-based, email/password + Google OAuth |
-| Payment | Xendit | Hosted invoice flow, webhook for confirmation |
-| i18n | i18next + react-i18next | ID/EN toggle, stored in cookie |
-| Chatbot | Claude Haiku API | Agent with tools, prompt caching |
-| Email | Nodemailer + Gmail SMTP | Order confirmation, forgot password |
-| Deploy | VPS | Decided later |
+| Concern   | Tool                    | Notes                                         |
+| --------- | ----------------------- | --------------------------------------------- |
+| Framework | TanStack Start          | SSR + server functions, file-based routing    |
+| ORM       | Prisma                  | With inline field comments on all models      |
+| DB (dev)  | Neon                    | Free tier PostgreSQL, serverless              |
+| DB (prod) | PostgreSQL on VPS       | Same server as app, pg_dump cron for backups  |
+| Storage   | Cloudinary              | Free tier — images, videos, `.glb` 3D models  |
+| Auth      | Better Auth             | Session-based, email/password + Google OAuth  |
+| Payment   | Xendit                  | Hosted invoice flow, webhook for confirmation |
+| i18n      | i18next + react-i18next | ID/EN toggle, stored in cookie                |
+| Chatbot   | Claude Haiku API        | Agent with tools, prompt caching              |
+| Email     | Nodemailer + Gmail SMTP | Order confirmation, forgot password           |
+| Deploy    | VPS                     | Decided later                                 |
 
 ---
 
@@ -46,6 +47,7 @@ Website goals:
 **Mode:** Light mode primary, dark mode supported.
 
 **Color palette:**
+
 - Primary: Blue `#2563eb`
 - Accent: Yellow `#facc15`
 - Background: White `#ffffff` / Light blue `#eff6ff`
@@ -63,32 +65,36 @@ Website goals:
 ## 4. Pages & Routes
 
 ### Public
-| Route | Page | Key Content |
-|---|---|---|
-| `/` | Home | Hero video, featured products, CTA to shop |
-| `/products` | Product Catalog | Grid, filter by category (ready-made / custom-base) |
-| `/products/:slug` | Product Detail | 3D model viewer (`@google/model-viewer`, `.glb` from Cloudinary), video demo, price, add to cart, variants, Tokopedia/Shopee links |
-| `/custom` | Custom Order | Form: describe idea, upload reference image, size/color/budget, submit to team |
-| `/cart` | Cart | Items, qty, total, checkout CTA |
-| `/checkout` | Checkout | Shipping address, Xendit payment |
-| `/order/:id` | Order Status | Payment status, order progress tracking |
-| `/about` | About | Startup story, team, mission |
+
+| Route             | Page            | Key Content                                                                                                                        |
+| ----------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `/`               | Home            | Hero video, featured products, CTA to shop                                                                                         |
+| `/products`       | Product Catalog | Grid, filter by category (ready-made / custom-base)                                                                                |
+| `/products/:slug` | Product Detail  | 3D model viewer (`@google/model-viewer`, `.glb` from Cloudinary), video demo, price, add to cart, variants, Tokopedia/Shopee links |
+| `/custom`         | Custom Order    | Form: describe idea, upload reference image, size/color/budget, submit to team                                                     |
+| `/cart`           | Cart            | Items, qty, total, checkout CTA                                                                                                    |
+| `/checkout`       | Checkout        | Shipping address, Xendit payment                                                                                                   |
+| `/order/:id`      | Order Status    | Payment status, order progress tracking                                                                                            |
+| `/about`          | About           | Startup story, team, mission                                                                                                       |
 
 ### Auth
-| Route | Page |
-|---|---|
-| `/login` | Email + password or Google OAuth |
-| `/register` | Create account |
-| `/account` | Order history, profile, addresses |
+
+| Route       | Page                              |
+| ----------- | --------------------------------- |
+| `/login`    | Email + password or Google OAuth  |
+| `/register` | Create account                    |
+| `/account`  | Order history, profile, addresses |
 
 Forgot password handled natively by Better Auth (email reset link via Verification table).
 
 ### System
-| Route | Purpose |
-|---|---|
+
+| Route                      | Purpose                             |
+| -------------------------- | ----------------------------------- |
 | `POST /api/xendit/webhook` | Xendit payment confirmation webhook |
 
 ### AI Chatbot
+
 Floating widget (bottom-right), present on all pages. Not a dedicated route.
 
 ---
@@ -98,12 +104,14 @@ Floating widget (bottom-right), present on all pages. Not a dedicated route.
 All models include `createdAt`, `updatedAt`. Inline comments on every field in final schema.
 
 ### Auth (Better Auth auto-generated)
+
 - `User` — id, email, emailVerified, name, image, role, createdAt, updatedAt
 - `Session` — token, expiresAt, ipAddress, userAgent
 - `Account` — OAuth provider accounts
 - `Verification` — email verify tokens + forgot password reset tokens
 
 ### Products
+
 ```
 Product         — slug, nameId, nameEn, descId, descEn, price (IDR), stock,
                   category (READY_MADE|CUSTOM_BASE), isPublished, isFeatured,
@@ -114,6 +122,7 @@ ProductVariant  — productId, color, size, priceAdjust, stock, sku (unique)
 ```
 
 ### Orders
+
 ```
 Order           — userId, status (PENDING_PAYMENT|PAID|PROCESSING|PRINTING|
                   SHIPPED|DELIVERED|CANCELLED|REFUNDED), subtotal, shippingCost,
@@ -125,6 +134,7 @@ OrderItem       — orderId, productId, variantId, productSnapshot (JSON), qty,
 ```
 
 ### Custom Orders
+
 ```
 CustomOrderRequest — userId (nullable), guestEmail, guestName, description,
                      refImages (String[]), size, colorNote, budgetMin, budgetMax,
@@ -133,13 +143,16 @@ CustomOrderRequest — userId (nullable), guestEmail, guestName, description,
 ```
 
 ### Cart
+
 ```
 Cart            — userId (nullable), sessionKey (guest cart fingerprint)
 CartItem        — cartId, productId, variantId, qty
 ```
+
 Guest cart uses `sessionKey` (localStorage). On login, guest cart merged into user cart automatically.
 
 ### Chatbot
+
 ```
 ChatSession     — userId (nullable), sessionKey (anon browser fingerprint),
                   escalated (bool)
@@ -147,6 +160,7 @@ ChatMessage     — sessionId, role (USER|ASSISTANT), content
 ```
 
 ### Supporting
+
 ```
 UserAddress     — userId, label, isDefault, name, phone, street, city,
                   province, postal, country
@@ -196,12 +210,14 @@ Coupon          — code (unique), type (PERCENT|FIXED), value, minOrder,
 **Placement:** Floating widget, bottom-right, all pages
 
 **Token management:**
+
 - Context window: last 10 messages only (full history in DB)
 - System prompt caching: Claude prompt cache (~90% cheaper on repeated calls)
 - Tool results trimmed: max 5 results, essential fields only
 - Language: Claude auto-detects and replies in user's language
 
 **Agent tools:**
+
 ```
 get_order_status(orderId)
   → queries Order table → returns status, tracking, ETA

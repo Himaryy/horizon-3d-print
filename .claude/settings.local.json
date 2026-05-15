@@ -17,7 +17,9 @@
       "Bash(mkdir -p h3d)",
       "Bash(tar -xf \"C:/Users/Mocch/AppData/Local/Temp/horizon-design.html\" -C /tmp/h3d)",
       "Read(//tmp/**)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(pnpm lint *)",
+      "Bash(grep -A 5 'products/\\\\$slug')"
     ]
   }
 }

@@ -60,7 +60,9 @@ export function Materials() {
                   {m.tagline}
                 </div>
               </div>
-              <span className="chip ml-auto shrink-0 hidden sm:inline-flex">{m.tier}</span>
+              <span className="chip ml-auto shrink-0 hidden sm:inline-flex">
+                {m.tier}
+              </span>
             </div>
 
             <div className="hidden sm:flex flex-wrap gap-2">
@@ -73,7 +75,9 @@ export function Materials() {
 
             <div className="pt-3 border-t border-line">
               <span className="t-eyebrow mr-2 hidden sm:inline">Best for</span>
-              <span className="text-[12px] sm:text-[13px] text-ink-2">{m.best}</span>
+              <span className="text-[12px] sm:text-[13px] text-ink-2">
+                {m.best}
+              </span>
             </div>
           </motion.div>
         ))}

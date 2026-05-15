@@ -39,6 +39,7 @@ src/
 ## Task 23: Cloudinary Upload Helper
 
 **Files:**
+
 - Create: `src/lib/cloudinary.ts`
 
 - [ ] **Step 1: Write Cloudinary server helper**
@@ -49,7 +50,7 @@ import { v2 as cloudinary } from 'cloudinary'
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
-  api_key:    process.env.CLOUDINARY_API_KEY!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 })
 
@@ -64,7 +65,10 @@ export function getSignedUploadParams(folder: string): {
 } {
   const timestamp = Math.round(Date.now() / 1000)
   const paramsToSign = { folder, timestamp }
-  const signature = cloudinary.utils.api_sign_request(paramsToSign, process.env.CLOUDINARY_API_SECRET!)
+  const signature = cloudinary.utils.api_sign_request(
+    paramsToSign,
+    process.env.CLOUDINARY_API_SECRET!,
+  )
 
   return {
     signature,
@@ -78,11 +82,14 @@ export function getSignedUploadParams(folder: string): {
 // Upload a file buffer from server (used for 3D models and videos seeded by admin)
 export async function uploadBuffer(
   buffer: Buffer,
-  options: { folder: string; resourceType?: 'image' | 'video' | 'raw' }
+  options: { folder: string; resourceType?: 'image' | 'video' | 'raw' },
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder: options.folder, resource_type: options.resourceType ?? 'image' },
+      {
+        folder: options.folder,
+        resource_type: options.resourceType ?? 'image',
+      },
       (err, result) => {
         if (err || !result) return reject(err ?? new Error('Upload failed'))
         resolve(result.secure_url)
@@ -138,6 +145,7 @@ git commit -m "feat: Cloudinary signed upload helper for direct browser uploads"
 ## Task 24: Custom Order Server Functions
 
 **Files:**
+
 - Create: `src/server/custom-orders.ts`
 
 - [ ] **Step 1: Write custom order server functions**
@@ -151,21 +159,25 @@ import { getSignedUploadParams } from '~/lib/cloudinary'
 import { sendCustomOrderNotification } from '~/lib/email'
 
 // Returns Cloudinary signed params for direct browser upload of reference images
-export const getUploadSignature = createServerFn({ method: 'GET' }).handler(() => {
-  return getSignedUploadParams('custom-orders')
-})
+export const getUploadSignature = createServerFn({ method: 'GET' }).handler(
+  () => {
+    return getSignedUploadParams('custom-orders')
+  },
+)
 
 export const submitCustomOrder = createServerFn({ method: 'POST' })
-  .inputValidator((data: {
-    description: string
-    refImages: string[]    // Cloudinary URLs after direct upload
-    size?: string
-    colorNote?: string
-    budgetMin?: number
-    budgetMax?: number
-    guestEmail?: string
-    guestName?: string
-  }) => data)
+  .inputValidator(
+    (data: {
+      description: string
+      refImages: string[] // Cloudinary URLs after direct upload
+      size?: string
+      colorNote?: string
+      budgetMin?: number
+      budgetMax?: number
+      guestEmail?: string
+      guestName?: string
+    }) => data,
+  )
   .handler(async ({ data, request }) => {
     const session = await auth.api.getSession({ headers: request.headers })
     const userId = session?.user?.id ?? null
@@ -216,6 +228,7 @@ git commit -m "feat: custom order server functions with Cloudinary upload signat
 ## Task 25: Custom Order Page
 
 **Files:**
+
 - Create: `src/routes/custom.tsx`
 - Create: `src/components/custom/CustomOrderForm.tsx`
 
@@ -248,9 +261,13 @@ export function CustomOrderForm({ isLoggedIn, onSuccess }: Props) {
   const id = i18n.language === 'id'
 
   const [form, setForm] = useState<FormState>({
-    description: '', size: '', colorNote: '',
-    budgetMin: '', budgetMax: '',
-    guestEmail: '', guestName: '',
+    description: '',
+    size: '',
+    colorNote: '',
+    budgetMin: '',
+    budgetMax: '',
+    guestEmail: '',
+    guestName: '',
   })
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
@@ -258,7 +275,7 @@ export function CustomOrderForm({ isLoggedIn, onSuccess }: Props) {
   const [error, setError] = useState<string | null>(null)
 
   function setField(key: keyof FormState, value: string) {
-    setForm(f => ({ ...f, [key]: value }))
+    setForm((f) => ({ ...f, [key]: value }))
   }
 
   // Direct upload to Cloudinary via signed params
@@ -271,7 +288,8 @@ export function CustomOrderForm({ isLoggedIn, onSuccess }: Props) {
       const sigParams = await getUploadSignature()
       const urls: string[] = []
 
-      for (const file of files.slice(0, 5)) { // max 5 reference images
+      for (const file of files.slice(0, 5)) {
+        // max 5 reference images
         const formData = new FormData()
         formData.append('file', file)
         formData.append('api_key', sigParams.apiKey)
@@ -287,7 +305,7 @@ export function CustomOrderForm({ isLoggedIn, onSuccess }: Props) {
         if (data.secure_url) urls.push(data.secure_url)
       }
 
-      setUploadedImages(prev => [...prev, ...urls])
+      setUploadedImages((prev) => [...prev, ...urls])
     } catch {
       setError(id ? 'Gagal upload gambar' : 'Failed to upload images')
     } finally {
@@ -315,7 +333,13 @@ export function CustomOrderForm({ isLoggedIn, onSuccess }: Props) {
       })
       onSuccess(result.id)
     } catch (err) {
-      setError(err instanceof Error ? err.message : (id ? 'Terjadi kesalahan' : 'Something went wrong'))
+      setError(
+        err instanceof Error
+          ? err.message
+          : id
+            ? 'Terjadi kesalahan'
+            : 'Something went wrong',
+      )
     } finally {
       setSubmitting(false)
     }
@@ -323,7 +347,6 @@ export function CustomOrderForm({ isLoggedIn, onSuccess }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-
       {/* Guest fields */}
       {!isLoggedIn && (
         <div className="grid md:grid-cols-2 gap-4 p-4 border-2 border-dashed border-[#2563eb] rounded-[10px] bg-[#eff6ff]">
@@ -331,16 +354,27 @@ export function CustomOrderForm({ isLoggedIn, onSuccess }: Props) {
             {id ? '👤 Isi data kamu (tamu)' : '👤 Your details (guest)'}
           </p>
           <div>
-            <label className="block text-sm font-bold mb-1">{id ? 'Nama' : 'Name'} *</label>
-            <input required value={form.guestName} onChange={e => setField('guestName', e.target.value)}
+            <label className="block text-sm font-bold mb-1">
+              {id ? 'Nama' : 'Name'} *
+            </label>
+            <input
+              required
+              value={form.guestName}
+              onChange={(e) => setField('guestName', e.target.value)}
               placeholder="Budi Santoso"
-              className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]" />
+              className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
+            />
           </div>
           <div>
             <label className="block text-sm font-bold mb-1">Email *</label>
-            <input required type="email" value={form.guestEmail} onChange={e => setField('guestEmail', e.target.value)}
+            <input
+              required
+              type="email"
+              value={form.guestEmail}
+              onChange={(e) => setField('guestEmail', e.target.value)}
               placeholder="email@contoh.com"
-              className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]" />
+              className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
+            />
           </div>
         </div>
       )}
@@ -359,9 +393,13 @@ export function CustomOrderForm({ isLoggedIn, onSuccess }: Props) {
           required
           minLength={10}
           value={form.description}
-          onChange={e => setField('description', e.target.value)}
+          onChange={(e) => setField('description', e.target.value)}
           rows={5}
-          placeholder={id ? 'Saya ingin figur naga yang bisa digerakkan, dengan sayap yang bisa dibuka...' : 'I want a poseable dragon figure with openable wings...'}
+          placeholder={
+            id
+              ? 'Saya ingin figur naga yang bisa digerakkan, dengan sayap yang bisa dibuka...'
+              : 'I want a poseable dragon figure with openable wings...'
+          }
           className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb] resize-none"
         />
       </div>
@@ -372,24 +410,43 @@ export function CustomOrderForm({ isLoggedIn, onSuccess }: Props) {
           {id ? 'Gambar referensi (opsional)' : 'Reference images (optional)'}
         </label>
         <p className="text-xs text-gray-400 mb-2">
-          {id ? 'Max 5 foto. Foto karakter, sketsa, atau apapun yang bisa bantu kami.' : 'Max 5 images. Character photos, sketches, or anything that helps.'}
+          {id
+            ? 'Max 5 foto. Foto karakter, sketsa, atau apapun yang bisa bantu kami.'
+            : 'Max 5 images. Character photos, sketches, or anything that helps.'}
         </p>
 
-        <input type="file" accept="image/*" multiple onChange={handleFileChange}
-          className="block text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:border-2 file:border-[#111] file:rounded-[6px] file:font-black file:text-sm file:bg-white hover:file:bg-[#eff6ff] file:cursor-pointer" />
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleFileChange}
+          className="block text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:border-2 file:border-[#111] file:rounded-[6px] file:font-black file:text-sm file:bg-white hover:file:bg-[#eff6ff] file:cursor-pointer"
+        />
 
-        {uploading && <p className="text-xs text-[#2563eb] mt-2 font-semibold">⏳ {id ? 'Mengupload...' : 'Uploading...'}</p>}
+        {uploading && (
+          <p className="text-xs text-[#2563eb] mt-2 font-semibold">
+            ⏳ {id ? 'Mengupload...' : 'Uploading...'}
+          </p>
+        )}
 
         {uploadedImages.length > 0 && (
           <div className="flex gap-2 mt-3 flex-wrap">
             {uploadedImages.map((url, i) => (
               <div key={i} className="relative">
-                <img src={url} alt={`ref-${i}`} className="w-16 h-16 object-cover rounded border-2 border-[#111]" />
+                <img
+                  src={url}
+                  alt={`ref-${i}`}
+                  className="w-16 h-16 object-cover rounded border-2 border-[#111]"
+                />
                 <button
                   type="button"
-                  onClick={() => setUploadedImages(imgs => imgs.filter((_, j) => j !== i))}
+                  onClick={() =>
+                    setUploadedImages((imgs) => imgs.filter((_, j) => j !== i))
+                  }
                   className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs flex items-center justify-center font-black"
-                >×</button>
+                >
+                  ×
+                </button>
               </div>
             ))}
           </div>
@@ -399,37 +456,71 @@ export function CustomOrderForm({ isLoggedIn, onSuccess }: Props) {
       {/* Size + color */}
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label className="block font-bold text-sm mb-1">{id ? 'Ukuran (opsional)' : 'Size (optional)'}</label>
-          <input value={form.size} onChange={e => setField('size', e.target.value)}
-            placeholder={id ? 'cth: 15cm, segenggam tangan' : 'e.g. 15cm, palm-sized'}
-            className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]" />
+          <label className="block font-bold text-sm mb-1">
+            {id ? 'Ukuran (opsional)' : 'Size (optional)'}
+          </label>
+          <input
+            value={form.size}
+            onChange={(e) => setField('size', e.target.value)}
+            placeholder={
+              id ? 'cth: 15cm, segenggam tangan' : 'e.g. 15cm, palm-sized'
+            }
+            className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
+          />
         </div>
         <div>
-          <label className="block font-bold text-sm mb-1">{id ? 'Warna (opsional)' : 'Color preference (optional)'}</label>
-          <input value={form.colorNote} onChange={e => setField('colorNote', e.target.value)}
+          <label className="block font-bold text-sm mb-1">
+            {id ? 'Warna (opsional)' : 'Color preference (optional)'}
+          </label>
+          <input
+            value={form.colorNote}
+            onChange={(e) => setField('colorNote', e.target.value)}
             placeholder={id ? 'cth: merah dan hitam' : 'e.g. red and black'}
-            className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]" />
+            className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
+          />
         </div>
       </div>
 
       {/* Budget */}
       <div>
-        <label className="block font-black mb-1">{id ? 'Budget (opsional)' : 'Budget (optional)'}</label>
+        <label className="block font-black mb-1">
+          {id ? 'Budget (opsional)' : 'Budget (optional)'}
+        </label>
         <div className="flex items-center gap-3">
-          <input type="number" value={form.budgetMin} onChange={e => setField('budgetMin', e.target.value)}
+          <input
+            type="number"
+            value={form.budgetMin}
+            onChange={(e) => setField('budgetMin', e.target.value)}
             placeholder={id ? 'Min (IDR)' : 'Min (IDR)'}
-            className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]" />
+            className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
+          />
           <span className="font-bold text-gray-400">–</span>
-          <input type="number" value={form.budgetMax} onChange={e => setField('budgetMax', e.target.value)}
+          <input
+            type="number"
+            value={form.budgetMax}
+            onChange={(e) => setField('budgetMax', e.target.value)}
             placeholder={id ? 'Max (IDR)' : 'Max (IDR)'}
-            className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]" />
+            className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
+          />
         </div>
       </div>
 
       {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
 
-      <Button type="submit" chunky size="lg" className="w-full" disabled={submitting || uploading}>
-        {submitting ? (id ? '⏳ Mengirim...' : '⏳ Submitting...') : (id ? '📤 Kirim Pesanan Custom' : '📤 Submit Custom Order')}
+      <Button
+        type="submit"
+        chunky
+        size="lg"
+        className="w-full"
+        disabled={submitting || uploading}
+      >
+        {submitting
+          ? id
+            ? '⏳ Mengirim...'
+            : '⏳ Submitting...'
+          : id
+            ? '📤 Kirim Pesanan Custom'
+            : '📤 Submit Custom Order'}
       </Button>
     </form>
   )
@@ -464,12 +555,23 @@ function CustomPage() {
           {id ? 'Pesanan dikirim!' : 'Order submitted!'}
         </h2>
         <p className="text-gray-500 mb-2">
-          {id ? 'Tim kami akan review dan menghubungi kamu dalam 1-2 hari kerja.' : 'Our team will review and contact you within 1-2 business days.'}
+          {id
+            ? 'Tim kami akan review dan menghubungi kamu dalam 1-2 hari kerja.'
+            : 'Our team will review and contact you within 1-2 business days.'}
         </p>
-        <p className="text-xs text-gray-400 font-mono">ID: {successId.slice(-12).toUpperCase()}</p>
+        <p className="text-xs text-gray-400 font-mono">
+          ID: {successId.slice(-12).toUpperCase()}
+        </p>
         <div className="flex gap-3 justify-center mt-8">
-          <Link to="/" className="text-[#2563eb] font-bold hover:underline">← Home</Link>
-          <Link to="/products" className="text-[#2563eb] font-bold hover:underline">Lihat Produk</Link>
+          <Link to="/" className="text-[#2563eb] font-bold hover:underline">
+            ← Home
+          </Link>
+          <Link
+            to="/products"
+            className="text-[#2563eb] font-bold hover:underline"
+          >
+            Lihat Produk
+          </Link>
         </div>
       </div>
     )
@@ -479,18 +581,28 @@ function CustomPage() {
     <div className="max-w-2xl mx-auto px-4 py-10">
       {/* Header */}
       <div className="mb-10">
-        <p className="text-xs font-black tracking-[3px] text-[#2563eb] mb-3">✏️ CUSTOM ORDER</p>
+        <p className="text-xs font-black tracking-[3px] text-[#2563eb] mb-3">
+          ✏️ CUSTOM ORDER
+        </p>
         <h1 className="font-black text-4xl md:text-5xl leading-tight mb-4">
           {id ? (
-            <>Desain <span className="text-[#2563eb]">milikmu</span><br /><span className="bg-[#facc15] px-2">sendiri.</span></>
+            <>
+              Desain <span className="text-[#2563eb]">milikmu</span>
+              <br />
+              <span className="bg-[#facc15] px-2">sendiri.</span>
+            </>
           ) : (
-            <>Your own<br /><span className="text-[#2563eb]">design.</span></>
+            <>
+              Your own
+              <br />
+              <span className="text-[#2563eb]">design.</span>
+            </>
           )}
         </h1>
         <p className="text-gray-500">
           {id
             ? 'Ceritakan idemu, upload referensi, dan kami akan mencetak untuk kamu.'
-            : 'Tell us your idea, upload a reference, and we\'ll print it for you.'}
+            : "Tell us your idea, upload a reference, and we'll print it for you."}
         </p>
       </div>
 
@@ -498,20 +610,23 @@ function CustomPage() {
       <div className="grid grid-cols-3 gap-3 mb-10">
         {[
           { icon: '📝', step: id ? '1. Isi form' : '1. Fill form' },
-          { icon: '💬', step: id ? '2. Tim review & quote' : '2. Team reviews & quotes' },
+          {
+            icon: '💬',
+            step: id ? '2. Tim review & quote' : '2. Team reviews & quotes',
+          },
           { icon: '🖨️', step: id ? '3. Kita cetak!' : '3. We print it!' },
         ].map(({ icon, step }) => (
-          <div key={step} className="text-center p-3 border-2 border-[#111] rounded-[10px] bg-[#eff6ff]">
+          <div
+            key={step}
+            className="text-center p-3 border-2 border-[#111] rounded-[10px] bg-[#eff6ff]"
+          >
             <p className="text-2xl mb-1">{icon}</p>
             <p className="text-xs font-black leading-tight">{step}</p>
           </div>
         ))}
       </div>
 
-      <CustomOrderForm
-        isLoggedIn={!!session?.user}
-        onSuccess={setSuccessId}
-      />
+      <CustomOrderForm isLoggedIn={!!session?.user} onSuccess={setSuccessId} />
     </div>
   )
 }
@@ -524,6 +639,7 @@ pnpm dev
 ```
 
 Open `http://localhost:3000/custom` — verify:
+
 - Form renders with all fields
 - File upload picker visible
 - Guest email fields appear when not logged in
@@ -541,6 +657,7 @@ git commit -m "feat: custom order page with Cloudinary image upload and email no
 ## Task 26: Login Page
 
 **Files:**
+
 - Create: `src/routes/login.tsx`
 
 - [ ] **Step 1: Write login page**
@@ -600,14 +717,33 @@ function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="border-2 border-[#111] rounded-[10px] p-8 shadow-[4px_4px_0_#111]">
           <h1 className="font-black text-2xl mb-1">Masuk</h1>
-          <p className="text-gray-400 text-sm mb-6">Login to your Brand3D account</p>
+          <p className="text-gray-400 text-sm mb-6">
+            Login to your Brand3D account
+          </p>
 
           {/* Google OAuth */}
           <button
             onClick={handleGoogleLogin}
             className="w-full border-2 border-[#111] rounded-[8px] py-2.5 font-black text-sm flex items-center justify-center gap-2 hover:bg-[#eff6ff] transition-colors mb-4"
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            <svg className="w-4 h-4" viewBox="0 0 24 24">
+              <path
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              />
+            </svg>
             Lanjut dengan Google
           </button>
 
@@ -622,7 +758,10 @@ function LoginPage() {
             <div>
               <label className="block text-sm font-bold mb-1">Email</label>
               <input
-                required type="email" value={email} onChange={e => setEmail(e.target.value)}
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="email@contoh.com"
                 className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
               />
@@ -630,22 +769,38 @@ function LoginPage() {
             <div>
               <label className="block text-sm font-bold mb-1">Password</label>
               <input
-                required type="password" value={password} onChange={e => setPassword(e.target.value)}
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
               />
             </div>
 
-            {error && <p className="text-red-500 text-xs font-semibold">{error}</p>}
+            {error && (
+              <p className="text-red-500 text-xs font-semibold">{error}</p>
+            )}
 
-            <Button type="submit" chunky size="lg" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              chunky
+              size="lg"
+              className="w-full"
+              disabled={loading}
+            >
               {loading ? 'Masuk...' : 'Masuk'}
             </Button>
           </form>
 
           <p className="text-center text-sm mt-4 text-gray-500">
             Belum punya akun?{' '}
-            <Link to="/register" className="text-[#2563eb] font-bold hover:underline">Daftar</Link>
+            <Link
+              to="/register"
+              className="text-[#2563eb] font-bold hover:underline"
+            >
+              Daftar
+            </Link>
           </p>
         </div>
       </div>
@@ -666,6 +821,7 @@ git commit -m "feat: login page with email/password and Google OAuth"
 ## Task 27: Register Page
 
 **Files:**
+
 - Create: `src/routes/register.tsx`
 
 - [ ] **Step 1: Write register page**
@@ -722,7 +878,24 @@ function RegisterPage() {
             onClick={handleGoogleLogin}
             className="w-full border-2 border-[#111] rounded-[8px] py-2.5 font-black text-sm flex items-center justify-center gap-2 hover:bg-[#eff6ff] transition-colors mb-4"
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            <svg className="w-4 h-4" viewBox="0 0 24 24">
+              <path
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              />
+            </svg>
             Daftar dengan Google
           </button>
 
@@ -734,34 +907,64 @@ function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
-              <label className="block text-sm font-bold mb-1">Nama Lengkap</label>
-              <input required value={name} onChange={e => setName(e.target.value)}
+              <label className="block text-sm font-bold mb-1">
+                Nama Lengkap
+              </label>
+              <input
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Budi Santoso"
-                className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]" />
+                className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
+              />
             </div>
             <div>
               <label className="block text-sm font-bold mb-1">Email</label>
-              <input required type="email" value={email} onChange={e => setEmail(e.target.value)}
+              <input
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="email@contoh.com"
-                className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]" />
+                className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
+              />
             </div>
             <div>
               <label className="block text-sm font-bold mb-1">Password</label>
-              <input required type="password" minLength={8} value={password} onChange={e => setPassword(e.target.value)}
+              <input
+                required
+                type="password"
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Min 8 karakter"
-                className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]" />
+                className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
+              />
             </div>
 
-            {error && <p className="text-red-500 text-xs font-semibold">{error}</p>}
+            {error && (
+              <p className="text-red-500 text-xs font-semibold">{error}</p>
+            )}
 
-            <Button type="submit" chunky size="lg" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              chunky
+              size="lg"
+              className="w-full"
+              disabled={loading}
+            >
               {loading ? 'Mendaftar...' : 'Daftar'}
             </Button>
           </form>
 
           <p className="text-center text-sm mt-4 text-gray-500">
             Sudah punya akun?{' '}
-            <Link to="/login" className="text-[#2563eb] font-bold hover:underline">Masuk</Link>
+            <Link
+              to="/login"
+              className="text-[#2563eb] font-bold hover:underline"
+            >
+              Masuk
+            </Link>
           </p>
         </div>
       </div>
@@ -782,6 +985,7 @@ git commit -m "feat: register page with auto-login after signup"
 ## Task 28: Account Page
 
 **Files:**
+
 - Create: `src/routes/account.tsx`
 - Modify: `src/server/orders.ts` — add `getUserOrders`
 
@@ -790,23 +994,28 @@ git commit -m "feat: register page with auto-login after signup"
 Add to `src/server/orders.ts`:
 
 ```typescript
-export const getUserOrders = createServerFn({ method: 'GET' }).handler(async ({ request }) => {
-  const session = await auth.api.getSession({ headers: request.headers })
-  if (!session?.user?.id) throw new Error('Not authenticated')
+export const getUserOrders = createServerFn({ method: 'GET' }).handler(
+  async ({ request }) => {
+    const session = await auth.api.getSession({ headers: request.headers })
+    if (!session?.user?.id) throw new Error('Not authenticated')
 
-  return db.order.findMany({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: 'desc' },
-    take: 20,
-    include: {
-      items: {
-        select: {
-          id: true, qty: true, total: true, productSnapshot: true,
+    return db.order.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
+      include: {
+        items: {
+          select: {
+            id: true,
+            qty: true,
+            total: true,
+            productSnapshot: true,
+          },
         },
       },
-    },
-  })
-})
+    })
+  },
+)
 ```
 
 - [ ] **Step 2: Write account page**
@@ -831,7 +1040,10 @@ export const Route = createFileRoute('/account')({
   component: AccountPage,
 })
 
-const statusColors: Record<OrderStatus, 'gray' | 'yellow' | 'blue' | 'green' | 'red'> = {
+const statusColors: Record<
+  OrderStatus,
+  'gray' | 'yellow' | 'blue' | 'green' | 'red'
+> = {
   PENDING_PAYMENT: 'yellow',
   PAID: 'blue',
   PROCESSING: 'blue',
@@ -848,7 +1060,11 @@ function AccountPage() {
   const orders = Route.useLoaderData()
 
   const fmt = (n: number) =>
-    new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n)
+    new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0,
+    }).format(n)
 
   async function handleLogout() {
     await signOut()
@@ -868,8 +1084,10 @@ function AccountPage() {
             <p className="text-gray-400 text-sm">{session?.user?.email}</p>
           </div>
         </div>
-        <button onClick={handleLogout}
-          className="text-sm font-bold text-red-400 hover:text-red-600 border border-red-200 px-3 py-1.5 rounded hover:bg-red-50 transition-colors">
+        <button
+          onClick={handleLogout}
+          className="text-sm font-bold text-red-400 hover:text-red-600 border border-red-200 px-3 py-1.5 rounded hover:bg-red-50 transition-colors"
+        >
           {t('nav.logout', { ns: 'common' })}
         </button>
       </div>
@@ -881,11 +1099,16 @@ function AccountPage() {
         <div className="text-center py-16 text-gray-400">
           <p className="text-4xl mb-3">📭</p>
           <p className="font-semibold">Belum ada pesanan</p>
-          <Link to="/products" className="text-[#2563eb] font-bold hover:underline mt-3 inline-block">Mulai belanja →</Link>
+          <Link
+            to="/products"
+            className="text-[#2563eb] font-bold hover:underline mt-3 inline-block"
+          >
+            Mulai belanja →
+          </Link>
         </div>
       ) : (
         <div className="space-y-4">
-          {orders.map(order => (
+          {orders.map((order) => (
             <Link
               key={order.id}
               to="/order/$id"
@@ -894,17 +1117,27 @@ function AccountPage() {
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-mono text-xs text-gray-400">#{order.id.slice(-12).toUpperCase()}</p>
+                  <p className="font-mono text-xs text-gray-400">
+                    #{order.id.slice(-12).toUpperCase()}
+                  </p>
                   <p className="font-black text-lg mt-1">{fmt(order.total)}</p>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    {new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    {new Date(order.createdAt).toLocaleDateString('id-ID', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
                     {order.items.length} item{order.items.length > 1 ? 's' : ''}
                   </p>
                 </div>
                 <Badge color={statusColors[order.status as OrderStatus]}>
-                  {t(`status_${order.status.toLowerCase()}` as Parameters<typeof t>[0])}
+                  {t(
+                    `status_${order.status.toLowerCase()}` as Parameters<
+                      typeof t
+                    >[0],
+                  )}
                 </Badge>
               </div>
             </Link>
@@ -925,17 +1158,23 @@ In `src/components/layout/Navbar.tsx`, replace the static login link with:
 const { data: session } = useSession()
 
 // Replace the auth section with:
-{session?.user ? (
-  <Link to="/account"
-    className="text-white/80 hover:text-white text-sm font-semibold transition-colors">
-    {session.user.name?.split(' ')[0] ?? t('nav.account')}
-  </Link>
-) : (
-  <Link to="/login"
-    className="text-white/80 hover:text-white text-sm font-semibold transition-colors">
-    {t('nav.login')}
-  </Link>
-)}
+{
+  session?.user ? (
+    <Link
+      to="/account"
+      className="text-white/80 hover:text-white text-sm font-semibold transition-colors"
+    >
+      {session.user.name?.split(' ')[0] ?? t('nav.account')}
+    </Link>
+  ) : (
+    <Link
+      to="/login"
+      className="text-white/80 hover:text-white text-sm font-semibold transition-colors"
+    >
+      {t('nav.login')}
+    </Link>
+  )
+}
 ```
 
 - [ ] **Step 4: Commit**

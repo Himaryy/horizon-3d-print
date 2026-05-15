@@ -1,4 +1,4 @@
-import { FEATURED } from '#/lib/mock-data'
+import { featuredProductsQueryOptions } from '#/data/products'
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
 import { ProductCard } from '../product/ProductCard'
@@ -11,8 +11,11 @@ import {
 } from '#/components/ui/carousel'
 import { motion } from 'motion/react'
 import { fadeUp, stagger, staggerItem, viewport } from '#/lib/motion'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
 export function FeatureProduct() {
+  const { data: featured } = useSuspenseQuery(featuredProductsQueryOptions())
+
   return (
     <section className="mx-auto max-w-360 px-8 w-full">
       <motion.div
@@ -41,35 +44,61 @@ export function FeatureProduct() {
         </Link>
       </motion.div>
 
-      {/* Desktop: stagger grid */}
-      <motion.div
-        variants={stagger}
-        initial="hidden"
-        whileInView="show"
-        viewport={viewport}
-        className="hidden lg:grid gap-6 grid-cols-4"
-      >
-        {FEATURED.map((f) => (
-          <motion.div key={f.id} variants={staggerItem}>
-            <ProductCard {...f} />
+      {featured.length === 0 ? (
+        <p className="text-fog text-sm">No featured products yet.</p>
+      ) : (
+        <>
+          {/* Desktop: stagger grid */}
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewport}
+            className="hidden lg:grid gap-6 grid-cols-4"
+          >
+            {featured.map((f) => (
+              <motion.div key={f.id} variants={staggerItem}>
+                <ProductCard
+                  id={f.id}
+                  slug={f.slug}
+                  name={f.name}
+                  price={f.price}
+                  category={f.category}
+                  image={f.image}
+                />
+              </motion.div>
+            ))}
           </motion.div>
-        ))}
-      </motion.div>
 
-      {/* Mobile: carousel (no stagger — just slides in) */}
-      <Carousel className="lg:hidden overflow-visible" opts={{ align: 'start', dragFree: true }}>
-        <CarouselContent className="-ml-4 pt-2 pb-3 pr-3 overflow-visible">
-          {FEATURED.map((f) => (
-            <CarouselItem key={f.id} className="pl-4 basis-4/5 sm:basis-1/2">
-              <ProductCard {...f} />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <div className="hidden sm:flex justify-end gap-2 mt-4">
-          <CarouselPrevious className="static translate-y-0 translate-x-0" />
-          <CarouselNext className="static translate-y-0 translate-x-0" />
-        </div>
-      </Carousel>
+          {/* Mobile: carousel */}
+          <Carousel
+            className="lg:hidden overflow-visible"
+            opts={{ align: 'start', dragFree: true }}
+          >
+            <CarouselContent className="-ml-4 pt-2 pb-3 pr-3 overflow-visible">
+              {featured.map((f) => (
+                <CarouselItem
+                  key={f.id}
+                  className="pl-4 basis-4/5 sm:basis-1/2"
+                >
+                  <ProductCard
+                    id={f.id}
+                    slug={f.slug}
+                    name={f.name}
+                    price={f.price}
+                    category={f.category}
+                    image={f.image}
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="hidden sm:flex justify-end gap-2 mt-4">
+              <CarouselPrevious className="static translate-y-0 translate-x-0" />
+              <CarouselNext className="static translate-y-0 translate-x-0" />
+            </div>
+          </Carousel>
+        </>
+      )}
     </section>
   )
 }

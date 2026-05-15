@@ -4,37 +4,215 @@
   "title": "Design System: Horizon 3D Print",
   "extensions": {
     "colorMeta": {
-      "blueprint-blue":       { "role": "primary",   "displayName": "Blueprint Blue",       "canonical": "#2563eb", "tonalRamp": ["#1e3a8a","#1d4ed8","#2563eb","#3b82f6","#60a5fa","#93c5fd","#bfdbfe","#eff6ff"] },
-      "blueprint-blue-dark":  { "role": "primary",   "displayName": "Blueprint Blue Dark",  "canonical": "#1d4ed8", "tonalRamp": ["#1e3a8a","#1d4ed8","#2563eb","#3b82f6","#60a5fa","#93c5fd","#bfdbfe","#eff6ff"] },
-      "blueprint-blue-light": { "role": "primary",   "displayName": "Blueprint Blue Light", "canonical": "#3b82f6", "tonalRamp": ["#1e3a8a","#1d4ed8","#2563eb","#3b82f6","#60a5fa","#93c5fd","#bfdbfe","#eff6ff"] },
-      "blueprint-wash":       { "role": "tertiary",  "displayName": "Blueprint Wash",       "canonical": "#eff6ff", "tonalRamp": ["#1e3a8a","#2563eb","#bfdbfe","#dbeafe","#eff6ff","#f5f9ff","#f8fbff","#fafcff"] },
-      "filament-yellow":      { "role": "secondary", "displayName": "Filament Yellow",      "canonical": "#facc15", "tonalRamp": ["#713f12","#92400e","#d97706","#f59e0b","#facc15","#fde68a","#fef9c3","#fefce8"] },
-      "filament-yellow-dark": { "role": "secondary", "displayName": "Filament Yellow Dark", "canonical": "#eab308", "tonalRamp": ["#713f12","#92400e","#d97706","#f59e0b","#facc15","#fde68a","#fef9c3","#fefce8"] },
-      "press-black":          { "role": "neutral",   "displayName": "Press Black",          "canonical": "#111111", "tonalRamp": ["#0f0f0e","#111111","#374151","#6b7280","#9ca3af","#d1d5db","#f3f4f6","#fafaf9"] },
-      "ink":                  { "role": "neutral",   "displayName": "Ink",                  "canonical": "#0f0f0e", "tonalRamp": ["#0f0f0e","#111111","#374151","#6b7280","#9ca3af","#d1d5db","#f3f4f6","#fafaf9"] },
-      "fog":                  { "role": "neutral",   "displayName": "Fog",                  "canonical": "#6b7280", "tonalRamp": ["#111827","#374151","#4b5563","#6b7280","#9ca3af","#d1d5db","#f3f4f6","#f9fafb"] },
-      "cloud-white":          { "role": "neutral",   "displayName": "Cloud White",          "canonical": "#fafaf9", "tonalRamp": ["#111111","#374151","#9ca3af","#d1d5db","#f3f4f6","#fafaf9","#fdfdfd","#ffffff"] }
+      "blueprint-blue": {
+        "role": "primary",
+        "displayName": "Blueprint Blue",
+        "canonical": "#2563eb",
+        "tonalRamp": [
+          "#1e3a8a",
+          "#1d4ed8",
+          "#2563eb",
+          "#3b82f6",
+          "#60a5fa",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "blueprint-blue-dark": {
+        "role": "primary",
+        "displayName": "Blueprint Blue Dark",
+        "canonical": "#1d4ed8",
+        "tonalRamp": [
+          "#1e3a8a",
+          "#1d4ed8",
+          "#2563eb",
+          "#3b82f6",
+          "#60a5fa",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "blueprint-blue-light": {
+        "role": "primary",
+        "displayName": "Blueprint Blue Light",
+        "canonical": "#3b82f6",
+        "tonalRamp": [
+          "#1e3a8a",
+          "#1d4ed8",
+          "#2563eb",
+          "#3b82f6",
+          "#60a5fa",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "blueprint-wash": {
+        "role": "tertiary",
+        "displayName": "Blueprint Wash",
+        "canonical": "#eff6ff",
+        "tonalRamp": [
+          "#1e3a8a",
+          "#2563eb",
+          "#bfdbfe",
+          "#dbeafe",
+          "#eff6ff",
+          "#f5f9ff",
+          "#f8fbff",
+          "#fafcff"
+        ]
+      },
+      "filament-yellow": {
+        "role": "secondary",
+        "displayName": "Filament Yellow",
+        "canonical": "#facc15",
+        "tonalRamp": [
+          "#713f12",
+          "#92400e",
+          "#d97706",
+          "#f59e0b",
+          "#facc15",
+          "#fde68a",
+          "#fef9c3",
+          "#fefce8"
+        ]
+      },
+      "filament-yellow-dark": {
+        "role": "secondary",
+        "displayName": "Filament Yellow Dark",
+        "canonical": "#eab308",
+        "tonalRamp": [
+          "#713f12",
+          "#92400e",
+          "#d97706",
+          "#f59e0b",
+          "#facc15",
+          "#fde68a",
+          "#fef9c3",
+          "#fefce8"
+        ]
+      },
+      "press-black": {
+        "role": "neutral",
+        "displayName": "Press Black",
+        "canonical": "#111111",
+        "tonalRamp": [
+          "#0f0f0e",
+          "#111111",
+          "#374151",
+          "#6b7280",
+          "#9ca3af",
+          "#d1d5db",
+          "#f3f4f6",
+          "#fafaf9"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#0f0f0e",
+        "tonalRamp": [
+          "#0f0f0e",
+          "#111111",
+          "#374151",
+          "#6b7280",
+          "#9ca3af",
+          "#d1d5db",
+          "#f3f4f6",
+          "#fafaf9"
+        ]
+      },
+      "fog": {
+        "role": "neutral",
+        "displayName": "Fog",
+        "canonical": "#6b7280",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#9ca3af",
+          "#d1d5db",
+          "#f3f4f6",
+          "#f9fafb"
+        ]
+      },
+      "cloud-white": {
+        "role": "neutral",
+        "displayName": "Cloud White",
+        "canonical": "#fafaf9",
+        "tonalRamp": [
+          "#111111",
+          "#374151",
+          "#9ca3af",
+          "#d1d5db",
+          "#f3f4f6",
+          "#fafaf9",
+          "#fdfdfd",
+          "#ffffff"
+        ]
+      }
     },
     "typographyMeta": {
-      "display":  { "displayName": "Display",   "purpose": "Hero headings only. Left-aligned, three words max per line." },
-      "headline": { "displayName": "Headline",  "purpose": "Section titles, product names on detail pages." },
-      "title":    { "displayName": "Title",     "purpose": "Product card names, subsection labels." },
-      "body":     { "displayName": "Body",      "purpose": "Prose, descriptions, general content. Max 65ch." },
-      "label":    { "displayName": "Label",     "purpose": "Badges, kicker text, filter tabs. Uppercase, tracked." },
-      "mono":     { "displayName": "Mono/Price","purpose": "All prices, SKUs, order IDs. Formatted as Rp 125.000." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headings only. Left-aligned, three words max per line."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles, product names on detail pages."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Product card names, subsection labels."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose, descriptions, general content. Max 65ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Badges, kicker text, filter tabs. Uppercase, tracked."
+      },
+      "mono": {
+        "displayName": "Mono/Price",
+        "purpose": "All prices, SKUs, order IDs. Formatted as Rp 125.000."
+      }
     },
     "shadows": [
-      { "name": "press",    "value": "4px 4px 0 #111111",  "purpose": "Hover state on .btn-chunky and .card-hover. The only shadow in this system." },
-      { "name": "none",     "value": "none",                "purpose": "All surfaces at rest. The 2px border does the work." }
+      {
+        "name": "press",
+        "value": "4px 4px 0 #111111",
+        "purpose": "Hover state on .btn-chunky and .card-hover. The only shadow in this system."
+      },
+      {
+        "name": "none",
+        "value": "none",
+        "purpose": "All surfaces at rest. The 2px border does the work."
+      }
     ],
     "motion": [
-      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "All state transitions. 120ms for buttons, 150ms for cards." },
-      { "name": "duration-btn",  "value": "120ms",                          "purpose": "Button press animation duration." },
-      { "name": "duration-card", "value": "150ms",                          "purpose": "Card hover animation duration." }
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "All state transitions. 120ms for buttons, 150ms for cards."
+      },
+      {
+        "name": "duration-btn",
+        "value": "120ms",
+        "purpose": "Button press animation duration."
+      },
+      {
+        "name": "duration-card",
+        "value": "150ms",
+        "purpose": "Card hover animation duration."
+      }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "640px"  },
-      { "name": "md", "value": "768px"  },
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
       { "name": "lg", "value": "1024px" },
       { "name": "xl", "value": "1280px" }
     ]
@@ -109,11 +287,31 @@
       "Bricolage Grotesque at 800 weight for all headings"
     ],
     "rules": [
-      { "name": "The Filament Rule",       "body": "Yellow (#facc15) appears on maximum two elements per page. Cart button and logo mark. That's the budget.",                                   "section": "colors" },
-      { "name": "The Horizon Gradient Rule","body": "The only permitted gradient is the horizon-rule divider. No gradient text. No gradient backgrounds. No gradient buttons.",               "section": "colors" },
-      { "name": "The Heading Monopoly Rule","body": "Bricolage Grotesque is for headings only. Never use it for body copy, labels, or button text.",                                         "section": "typography" },
-      { "name": "The Price Precision Rule", "body": "All prices use JetBrains Mono. Format: Rp 125.000. Never approximate or estimate.",                                                    "section": "typography" },
-      { "name": "The Print Press Rule",     "body": "Shadows appear only as a response to interaction, in one form: 4px 4px 0 #111111. No ambient shadows. No blur. The border does the work.", "section": "elevation" }
+      {
+        "name": "The Filament Rule",
+        "body": "Yellow (#facc15) appears on maximum two elements per page. Cart button and logo mark. That's the budget.",
+        "section": "colors"
+      },
+      {
+        "name": "The Horizon Gradient Rule",
+        "body": "The only permitted gradient is the horizon-rule divider. No gradient text. No gradient backgrounds. No gradient buttons.",
+        "section": "colors"
+      },
+      {
+        "name": "The Heading Monopoly Rule",
+        "body": "Bricolage Grotesque is for headings only. Never use it for body copy, labels, or button text.",
+        "section": "typography"
+      },
+      {
+        "name": "The Price Precision Rule",
+        "body": "All prices use JetBrains Mono. Format: Rp 125.000. Never approximate or estimate.",
+        "section": "typography"
+      },
+      {
+        "name": "The Print Press Rule",
+        "body": "Shadows appear only as a response to interaction, in one form: 4px 4px 0 #111111. No ambient shadows. No blur. The border does the work.",
+        "section": "elevation"
+      }
     ],
     "dos": [
       "Do use Bricolage Grotesque at 800 weight for all headings.",

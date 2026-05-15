@@ -23,7 +23,10 @@ export function CTA() {
           viewport={viewport}
           className="relative flex flex-col items-center text-center"
         >
-          <motion.span variants={staggerItem} className="chip chip-ink border-[#2A2014] text-gold mb-8">
+          <motion.span
+            variants={staggerItem}
+            className="chip chip-ink border-[#2A2014] text-gold mb-8"
+          >
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-gold animate-[blink_1.5s_infinite]" />
             Small batch · Ships nationwide
           </motion.span>
@@ -46,12 +49,15 @@ export function CTA() {
             variants={staggerItem}
             className="text-[17px] leading-relaxed text-paper/60 max-w-xl mt-7 mb-10"
           >
-            Stop looking at it on screen. Upload your file and we'll put something
-            real in your hands by tomorrow — printed, finished, and shipped with
-            full attention from start to finish.
+            Stop looking at it on screen. Upload your file and we'll put
+            something real in your hands by tomorrow — printed, finished, and
+            shipped with full attention from start to finish.
           </motion.p>
 
-          <motion.div variants={staggerItem} className="flex items-center gap-3 flex-wrap justify-center">
+          <motion.div
+            variants={staggerItem}
+            className="flex items-center gap-3 flex-wrap justify-center"
+          >
             <Link to="/custom" className="btn btn-accent btn-lg">
               <LucideArrowUpFromLine className="size-4" />
               Upload your STL

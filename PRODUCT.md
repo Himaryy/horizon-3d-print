@@ -31,6 +31,7 @@ Not a toy brand that happens to be serious. Not a professional shop that happens
 Voice is direct and confident. No fluff. Copy earns its place. Indonesian-first (the primary audience is local), English feels natural too.
 
 References:
+
 - **Lego.com**: Product-first showcase, playful photography, grid that feels alive not flat
 - **Linear.app**: Precision, clean, every pixel intentional, confident without being cold
 - **Supreme**: Bold, direct, no explanations, the design IS the brand statement

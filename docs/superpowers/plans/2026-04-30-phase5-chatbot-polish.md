@@ -35,6 +35,7 @@ src/
 ## Task 29: Claude Agent Library
 
 **Files:**
+
 - Create: `src/lib/claude.ts`
 
 - [ ] **Step 1: Write Claude agent tools and client**
@@ -54,13 +55,15 @@ export const anthropic = new Anthropic({
 export const AGENT_TOOLS: Tool[] = [
   {
     name: 'get_order_status',
-    description: 'Get the current status and tracking info for a customer order. Use when user asks about their order.',
+    description:
+      'Get the current status and tracking info for a customer order. Use when user asks about their order.',
     input_schema: {
       type: 'object' as const,
       properties: {
         orderId: {
           type: 'string',
-          description: 'The order ID provided by the user (full ID or last 8 chars)',
+          description:
+            'The order ID provided by the user (full ID or last 8 chars)',
         },
       },
       required: ['orderId'],
@@ -68,7 +71,8 @@ export const AGENT_TOOLS: Tool[] = [
   },
   {
     name: 'search_products',
-    description: 'Search for products by name or keyword. Use when user asks what products are available.',
+    description:
+      'Search for products by name or keyword. Use when user asks what products are available.',
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -87,7 +91,8 @@ export const AGENT_TOOLS: Tool[] = [
   },
   {
     name: 'get_product_details',
-    description: 'Get detailed info about a specific product by its slug. Use when user asks about a specific product.',
+    description:
+      'Get detailed info about a specific product by its slug. Use when user asks about a specific product.',
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -101,7 +106,8 @@ export const AGENT_TOOLS: Tool[] = [
   },
   {
     name: 'escalate_to_human',
-    description: 'Escalate the conversation to a human team member. Use when: user is frustrated, question is too complex, or user explicitly asks for human help.',
+    description:
+      'Escalate the conversation to a human team member. Use when: user is frustrated, question is too complex, or user explicitly asks for human help.',
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -128,10 +134,7 @@ export async function executeTool(
       // Support partial ID (last N chars) — find by suffix
       const order = await db.order.findFirst({
         where: {
-          OR: [
-            { id: orderId },
-            { id: { endsWith: orderId.toLowerCase() } },
-          ],
+          OR: [{ id: orderId }, { id: { endsWith: orderId.toLowerCase() } }],
         },
         select: {
           id: true,
@@ -144,7 +147,10 @@ export async function executeTool(
       })
 
       if (!order) {
-        return JSON.stringify({ found: false, message: 'Order not found. Please check the ID.' })
+        return JSON.stringify({
+          found: false,
+          message: 'Order not found. Please check the ID.',
+        })
       }
 
       return JSON.stringify({
@@ -163,7 +169,9 @@ export async function executeTool(
         where: {
           isPublished: true,
           deletedAt: null,
-          ...(toolInput.category ? { category: toolInput.category as 'READY_MADE' | 'CUSTOM_BASE' } : {}),
+          ...(toolInput.category
+            ? { category: toolInput.category as 'READY_MADE' | 'CUSTOM_BASE' }
+            : {}),
           OR: [
             { nameId: { contains: toolInput.query, mode: 'insensitive' } },
             { nameEn: { contains: toolInput.query, mode: 'insensitive' } },
@@ -321,6 +329,7 @@ git commit -m "feat: Claude agent tools (order status, product search, detail, e
 ## Task 30: Chatbot Server Function
 
 **Files:**
+
 - Create: `src/server/chatbot.ts`
 
 - [ ] **Step 1: Write chat server function**
@@ -331,7 +340,12 @@ import { createServerFn } from '@tanstack/react-start'
 import { getCookie } from '@tanstack/react-start/server'
 import { db } from '~/lib/db'
 import { auth } from '~/lib/auth'
-import { anthropic, AGENT_TOOLS, executeTool, buildSystemPrompt } from '~/lib/claude'
+import {
+  anthropic,
+  AGENT_TOOLS,
+  executeTool,
+  buildSystemPrompt,
+} from '~/lib/claude'
 import type { MessageParam } from '@anthropic-ai/sdk/resources/messages'
 
 export const sendChatMessage = createServerFn({ method: 'POST' })
@@ -377,7 +391,7 @@ export const sendChatMessage = createServerFn({ method: 'POST' })
     })
     recentMessages.reverse() // oldest first
 
-    const messages: MessageParam[] = recentMessages.map(m => ({
+    const messages: MessageParam[] = recentMessages.map((m) => ({
       role: m.role === 'USER' ? 'user' : 'assistant',
       content: m.content,
     }))
@@ -400,7 +414,9 @@ export const sendChatMessage = createServerFn({ method: 'POST' })
     // Process tool calls in a loop (Claude may chain multiple tool calls)
     while (response.stop_reason === 'tool_use') {
       const assistantContent = response.content
-      const toolUseBlocks = assistantContent.filter(b => b.type === 'tool_use')
+      const toolUseBlocks = assistantContent.filter(
+        (b) => b.type === 'tool_use',
+      )
 
       // Execute all tool calls in this turn
       const toolResults = await Promise.all(
@@ -443,8 +459,8 @@ export const sendChatMessage = createServerFn({ method: 'POST' })
 
     // Extract final text response
     const assistantText = response.content
-      .filter(b => b.type === 'text')
-      .map(b => (b as { type: 'text'; text: string }).text)
+      .filter((b) => b.type === 'text')
+      .map((b) => (b as { type: 'text'; text: string }).text)
       .join('')
 
     // Save assistant reply to DB
@@ -492,6 +508,7 @@ git commit -m "feat: Claude chatbot server function with agentic loop and prompt
 ## Task 31: ChatWidget Component
 
 **Files:**
+
 - Create: `src/components/chatbot/ChatBubble.tsx`
 - Create: `src/components/chatbot/ChatWidget.tsx`
 - Modify: `src/routes/__root.tsx`
@@ -565,9 +582,9 @@ export function ChatWidget() {
   // Load history on first open
   useEffect(() => {
     if (!open || messages.length > 0) return
-    getChatHistory({ data: { sessionKey } }).then(history => {
+    getChatHistory({ data: { sessionKey } }).then((history) => {
       if (history.length > 0) {
-        setMessages(history.map(m => ({ role: m.role, content: m.content })))
+        setMessages(history.map((m) => ({ role: m.role, content: m.content })))
       } else {
         setMessages([{ role: 'ASSISTANT', content: t('greeting') }])
       }
@@ -586,17 +603,25 @@ export function ChatWidget() {
     if (!text || loading) return
 
     setInput('')
-    setMessages(prev => [...prev, { role: 'USER', content: text }])
+    setMessages((prev) => [...prev, { role: 'USER', content: text }])
     setLoading(true)
 
     try {
-      const result = await sendChatMessage({ data: { message: text, sessionKey } })
-      setMessages(prev => [...prev, { role: 'ASSISTANT', content: result.reply }])
+      const result = await sendChatMessage({
+        data: { message: text, sessionKey },
+      })
+      setMessages((prev) => [
+        ...prev,
+        { role: 'ASSISTANT', content: result.reply },
+      ])
     } catch {
-      setMessages(prev => [...prev, {
-        role: 'ASSISTANT',
-        content: t('error', { ns: 'common' }),
-      }])
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'ASSISTANT',
+          content: t('error', { ns: 'common' }),
+        },
+      ])
     } finally {
       setLoading(false)
     }
@@ -618,9 +643,14 @@ export function ChatWidget() {
           <div className="bg-[#2563eb] px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-[#facc15] rounded-full animate-pulse" />
-              <span className="text-white font-black text-sm">{t('title')}</span>
+              <span className="text-white font-black text-sm">
+                {t('title')}
+              </span>
             </div>
-            <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition-colors">
+            <button
+              onClick={() => setOpen(false)}
+              className="text-white/70 hover:text-white transition-colors"
+            >
               <X size={16} />
             </button>
           </div>
@@ -643,7 +673,7 @@ export function ChatWidget() {
           <div className="border-t-2 border-[#111]/10 p-3 flex gap-2">
             <input
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={t('placeholder')}
               disabled={loading}
@@ -662,7 +692,7 @@ export function ChatWidget() {
 
       {/* Toggle button */}
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen((o) => !o)}
         className="bg-[#2563eb] text-white rounded-full w-14 h-14 flex items-center justify-center shadow-[3px_3px_0_#111] border-2 border-[#111] hover:bg-[#1d4ed8] transition-colors"
         aria-label={t('title')}
       >
@@ -690,7 +720,7 @@ function RootLayout() {
         <Outlet />
       </main>
       <Footer />
-      <ChatWidget />   {/* ← add this */}
+      <ChatWidget /> {/* ← add this */}
     </RootDocument>
   )
 }
@@ -721,6 +751,7 @@ git commit -m "feat: AI chatbot widget with Claude Haiku agent, tool use, and pr
 ## Task 32: About Page
 
 **Files:**
+
 - Create: `src/routes/about.tsx`
 
 - [ ] **Step 1: Write about page**
@@ -742,12 +773,24 @@ function AboutPage() {
     <div className="max-w-3xl mx-auto px-4 py-16">
       {/* Hero */}
       <div className="mb-16">
-        <p className="text-xs font-black tracking-[3px] text-[#2563eb] mb-4">🖨️ TENTANG KAMI / ABOUT US</p>
+        <p className="text-xs font-black tracking-[3px] text-[#2563eb] mb-4">
+          🖨️ TENTANG KAMI / ABOUT US
+        </p>
         <h1 className="font-black text-5xl leading-tight mb-6">
           {id ? (
-            <>Kami bikin mainan<br /><span className="text-[#2563eb]">yang bisa digerakkan.</span></>
+            <>
+              Kami bikin mainan
+              <br />
+              <span className="text-[#2563eb]">yang bisa digerakkan.</span>
+            </>
           ) : (
-            <>We make toys<br /><span className="text-[#2563eb]">you can actually play with.</span></>
+            <>
+              We make toys
+              <br />
+              <span className="text-[#2563eb]">
+                you can actually play with.
+              </span>
+            </>
           )}
         </h1>
         <p className="text-gray-500 text-lg leading-relaxed max-w-2xl">
@@ -765,7 +808,7 @@ function AboutPage() {
             title: id ? 'Playful by Design' : 'Playful by Design',
             desc: id
               ? 'Produk kami bukan hiasan. Mereka bisa digerakkan, dipose, dan dimainkan setiap hari.'
-              : 'Our products aren\'t decorations. They\'re poseable, interactive, and made to be played with daily.',
+              : "Our products aren't decorations. They're poseable, interactive, and made to be played with daily.",
           },
           {
             icon: '🇮🇩',
@@ -779,10 +822,13 @@ function AboutPage() {
             title: id ? 'Custom untuk Kamu' : 'Custom for You',
             desc: id
               ? 'Tidak menemukan yang kamu mau? Deskripsikan idemu dan kami akan membuatnya.'
-              : 'Can\'t find what you want? Describe your idea and we\'ll build it for you.',
+              : "Can't find what you want? Describe your idea and we'll build it for you.",
           },
-        ].map(v => (
-          <div key={v.title} className="border-2 border-[#111] rounded-[10px] p-5">
+        ].map((v) => (
+          <div
+            key={v.title}
+            className="border-2 border-[#111] rounded-[10px] p-5"
+          >
             <p className="text-3xl mb-3">{v.icon}</p>
             <h3 className="font-black text-lg mb-2">{v.title}</h3>
             <p className="text-gray-500 text-sm leading-relaxed">{v.desc}</p>
@@ -792,13 +838,26 @@ function AboutPage() {
 
       {/* Team */}
       <div>
-        <h2 className="font-black text-2xl mb-6">{id ? '👥 Tim Kami' : '👥 Our Team'}</h2>
+        <h2 className="font-black text-2xl mb-6">
+          {id ? '👥 Tim Kami' : '👥 Our Team'}
+        </h2>
         <div className="flex gap-4 flex-wrap">
           {[
-            { name: 'Founder 1', role: id ? 'Co-Founder & Design' : 'Co-Founder & Design', emoji: '🎨' },
-            { name: 'Founder 2', role: id ? 'Co-Founder & Print' : 'Co-Founder & Print', emoji: '🖨️' },
-          ].map(member => (
-            <div key={member.name} className="border-2 border-[#111] rounded-[10px] p-5 w-48 text-center">
+            {
+              name: 'Founder 1',
+              role: id ? 'Co-Founder & Design' : 'Co-Founder & Design',
+              emoji: '🎨',
+            },
+            {
+              name: 'Founder 2',
+              role: id ? 'Co-Founder & Print' : 'Co-Founder & Print',
+              emoji: '🖨️',
+            },
+          ].map((member) => (
+            <div
+              key={member.name}
+              className="border-2 border-[#111] rounded-[10px] p-5 w-48 text-center"
+            >
               <p className="text-4xl mb-2">{member.emoji}</p>
               <p className="font-black">{member.name}</p>
               <p className="text-gray-400 text-xs mt-1">{member.role}</p>
@@ -806,7 +865,9 @@ function AboutPage() {
           ))}
         </div>
         <p className="text-gray-400 text-sm mt-4 italic">
-          {id ? '* Update nama dan foto setelah brand name diputuskan' : '* Update names and photos after brand name is decided'}
+          {id
+            ? '* Update nama dan foto setelah brand name diputuskan'
+            : '* Update names and photos after brand name is decided'}
         </p>
       </div>
     </div>
@@ -826,6 +887,7 @@ git commit -m "feat: about page with team, values, and bilingual content"
 ## Task 33: Error Pages + Final Polish
 
 **Files:**
+
 - Modify: `src/routes/__root.tsx`
 - Create: `prisma/seed.ts`
 
@@ -847,7 +909,10 @@ export const Route = createRootRoute({
       <p className="text-gray-500 text-sm max-w-sm">
         {error instanceof Error ? error.message : 'Unexpected error occurred.'}
       </p>
-      <a href="/" className="bg-[#2563eb] text-white font-black px-6 py-2.5 rounded-[8px] hover:bg-[#1d4ed8] transition-colors">
+      <a
+        href="/"
+        className="bg-[#2563eb] text-white font-black px-6 py-2.5 rounded-[8px] hover:bg-[#1d4ed8] transition-colors"
+      >
         ← Kembali ke Home
       </a>
     </div>
@@ -856,8 +921,13 @@ export const Route = createRootRoute({
     <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-4 text-center">
       <p className="text-5xl">🔍</p>
       <h1 className="font-black text-6xl text-[#2563eb]">404</h1>
-      <p className="font-black text-xl">Halaman tidak ditemukan / Page not found</p>
-      <a href="/" className="bg-[#2563eb] text-white font-black px-6 py-2.5 rounded-[8px] hover:bg-[#1d4ed8] transition-colors">
+      <p className="font-black text-xl">
+        Halaman tidak ditemukan / Page not found
+      </p>
+      <a
+        href="/"
+        className="bg-[#2563eb] text-white font-black px-6 py-2.5 rounded-[8px] hover:bg-[#1d4ed8] transition-colors"
+      >
         ← Kembali ke Home
       </a>
     </div>
@@ -886,8 +956,10 @@ async function main() {
       slug: 'robot-figure-v1',
       nameId: 'Figur Robot Artikulasi',
       nameEn: 'Articulated Robot Figure',
-      descId: 'Figur robot poseable dengan 12 titik sendi yang bisa digerakkan. Tinggi 15cm. Cocok untuk koleksi atau pajangan interaktif.',
-      descEn: 'Poseable robot figure with 12 articulated joints. 15cm tall. Perfect for collecting or interactive display.',
+      descId:
+        'Figur robot poseable dengan 12 titik sendi yang bisa digerakkan. Tinggi 15cm. Cocok untuk koleksi atau pajangan interaktif.',
+      descEn:
+        'Poseable robot figure with 12 articulated joints. 15cm tall. Perfect for collecting or interactive display.',
       price: 120000,
       stock: 50,
       category: 'READY_MADE',
@@ -897,13 +969,29 @@ async function main() {
       shopeeUrl: null,
       images: {
         create: [
-          { url: 'https://placehold.co/400x400/dbeafe/2563eb?text=Robot+Figure', alt: 'Robot Figure Front', order: 0 },
+          {
+            url: 'https://placehold.co/400x400/dbeafe/2563eb?text=Robot+Figure',
+            alt: 'Robot Figure Front',
+            order: 0,
+          },
         ],
       },
       variants: {
         create: [
-          { color: 'Gray', size: 'Standard', priceAdjust: 0, stock: 30, sku: 'ROBOT-GRY-STD' },
-          { color: 'Black', size: 'Standard', priceAdjust: 10000, stock: 20, sku: 'ROBOT-BLK-STD' },
+          {
+            color: 'Gray',
+            size: 'Standard',
+            priceAdjust: 0,
+            stock: 30,
+            sku: 'ROBOT-GRY-STD',
+          },
+          {
+            color: 'Black',
+            size: 'Standard',
+            priceAdjust: 10000,
+            stock: 20,
+            sku: 'ROBOT-BLK-STD',
+          },
         ],
       },
     },
@@ -914,8 +1002,10 @@ async function main() {
       slug: 'dragon-pose-v1',
       nameId: 'Naga Poseable',
       nameEn: 'Poseable Dragon',
-      descId: 'Naga 3D printed dengan sayap yang bisa dibuka-tutup dan ekor fleksibel. Tinggi 20cm.',
-      descEn: '3D printed dragon with openable wings and flexible tail. 20cm tall.',
+      descId:
+        'Naga 3D printed dengan sayap yang bisa dibuka-tutup dan ekor fleksibel. Tinggi 20cm.',
+      descEn:
+        '3D printed dragon with openable wings and flexible tail. 20cm tall.',
       price: 185000,
       stock: 25,
       category: 'READY_MADE',
@@ -923,13 +1013,29 @@ async function main() {
       isFeatured: true,
       images: {
         create: [
-          { url: 'https://placehold.co/400x400/fef9c3/713f12?text=Dragon', alt: 'Dragon Figure', order: 0 },
+          {
+            url: 'https://placehold.co/400x400/fef9c3/713f12?text=Dragon',
+            alt: 'Dragon Figure',
+            order: 0,
+          },
         ],
       },
       variants: {
         create: [
-          { color: 'Green', size: 'Standard', priceAdjust: 0, stock: 15, sku: 'DRAGON-GRN-STD' },
-          { color: 'Red', size: 'Standard', priceAdjust: 15000, stock: 10, sku: 'DRAGON-RED-STD' },
+          {
+            color: 'Green',
+            size: 'Standard',
+            priceAdjust: 0,
+            stock: 15,
+            sku: 'DRAGON-GRN-STD',
+          },
+          {
+            color: 'Red',
+            size: 'Standard',
+            priceAdjust: 15000,
+            stock: 10,
+            sku: 'DRAGON-RED-STD',
+          },
         ],
       },
     },
@@ -940,8 +1046,10 @@ async function main() {
       slug: 'mech-arm-v1',
       nameId: 'Lengan Mekanikal',
       nameEn: 'Mechanical Arm',
-      descId: 'Lengan robotik poseable dengan 6 DOF (degrees of freedom). Bisa digerakkan 360 derajat.',
-      descEn: 'Poseable robotic arm with 6 DOF (degrees of freedom). 360-degree rotation.',
+      descId:
+        'Lengan robotik poseable dengan 6 DOF (degrees of freedom). Bisa digerakkan 360 derajat.',
+      descEn:
+        'Poseable robotic arm with 6 DOF (degrees of freedom). 360-degree rotation.',
       price: 95000,
       stock: 40,
       category: 'READY_MADE',
@@ -949,13 +1057,29 @@ async function main() {
       isFeatured: true,
       images: {
         create: [
-          { url: 'https://placehold.co/400x400/dcfce7/14532d?text=Mech+Arm', alt: 'Mech Arm', order: 0 },
+          {
+            url: 'https://placehold.co/400x400/dcfce7/14532d?text=Mech+Arm',
+            alt: 'Mech Arm',
+            order: 0,
+          },
         ],
       },
       variants: {
         create: [
-          { color: 'Silver', size: 'Small', priceAdjust: 0, stock: 20, sku: 'MECHARM-SLV-SM' },
-          { color: 'Silver', size: 'Large', priceAdjust: 25000, stock: 20, sku: 'MECHARM-SLV-LG' },
+          {
+            color: 'Silver',
+            size: 'Small',
+            priceAdjust: 0,
+            stock: 20,
+            sku: 'MECHARM-SLV-SM',
+          },
+          {
+            color: 'Silver',
+            size: 'Large',
+            priceAdjust: 25000,
+            stock: 20,
+            sku: 'MECHARM-SLV-LG',
+          },
         ],
       },
     },

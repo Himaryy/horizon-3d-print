@@ -164,37 +164,39 @@ function CartPage() {
 
         {/* Right - Order Summary */}
         <div className="card p-6 flex flex-col gap-4 lg:sticky lg:top-24">
-        <h2 className="h-display text-[22px] text-ink">Order Summary</h2>
-        <Separator />
+          <h2 className="h-display text-[22px] text-ink">Order Summary</h2>
+          <Separator />
 
-        <div className="flex flex-col gap-3">
-          <div className="flex justify-between text-[14px]">
-            <span className="text-ink-2">Subtotal ({totalItems()} items)</span>
-            <span className="t-mono text-ink">{formatIDR(totalPrice())}</span>
+          <div className="flex flex-col gap-3">
+            <div className="flex justify-between text-[14px]">
+              <span className="text-ink-2">
+                Subtotal ({totalItems()} items)
+              </span>
+              <span className="t-mono text-ink">{formatIDR(totalPrice())}</span>
+            </div>
+            <div className="flex justify-between text-[14px]">
+              <span className="text-ink-2">Shipping</span>
+              <span className="t-mono text-fog">Calculated at checkout</span>
+            </div>
           </div>
-          <div className="flex justify-between text-[14px]">
-            <span className="text-ink-2">Shipping</span>
-            <span className="t-mono text-fog">Calculated at checkout</span>
+
+          <Separator />
+
+          <div className="flex justify-between">
+            <span className="t-eyebrow">Total</span>
+            <span className="price text-[20px] text-ink">
+              {formatIDR(totalPrice())}
+            </span>
           </div>
-        </div>
 
-        <Separator />
+          <Button className="btn btn-accent w-full h-12 text-[15px] mt-2">
+            Checkout
+            <ArrowRight className="size-4" />
+          </Button>
 
-        <div className="flex justify-between">
-          <span className="t-eyebrow">Total</span>
-          <span className="price text-[20px] text-ink">
-            {formatIDR(totalPrice())}
-          </span>
-        </div>
-
-        <Button className="btn btn-accent w-full h-12 text-[15px] mt-2">
-          Checkout
-          <ArrowRight className="size-4" />
-        </Button>
-
-        <p className="text-[12px] text-fog text-center">
-          Prints shipped within 24h • Made in Indonesia
-        </p>
+          <p className="text-[12px] text-fog text-center">
+            Prints shipped within 24h • Made in Indonesia
+          </p>
         </div>
       </div>
     </motion.main>

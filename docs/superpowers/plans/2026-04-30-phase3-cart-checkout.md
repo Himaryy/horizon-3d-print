@@ -44,6 +44,7 @@ src/
 ## Task 15: Cart Server Functions
 
 **Files:**
+
 - Create: `src/server/cart.ts`
 
 - [ ] **Step 1: Write cart server functions**
@@ -65,7 +66,7 @@ async function getSessionKey(): Promise<string> {
   const key = randomUUID()
   setCookie('cart_session', key, {
     maxAge: 60 * 60 * 24 * 365, // 1 year
-    httpOnly: false,             // JS-readable so client can store in localStorage too
+    httpOnly: false, // JS-readable so client can store in localStorage too
     sameSite: 'lax',
     path: '/',
   })
@@ -88,30 +89,41 @@ async function getOrCreateCart(userId: string | null, sessionKey: string) {
   })
 }
 
-export const getCart = createServerFn({ method: 'GET' }).handler(async ({ request }) => {
-  const session = await auth.api.getSession({ headers: request.headers })
-  const userId = session?.user?.id ?? null
-  const sessionKey = await getSessionKey()
+export const getCart = createServerFn({ method: 'GET' }).handler(
+  async ({ request }) => {
+    const session = await auth.api.getSession({ headers: request.headers })
+    const userId = session?.user?.id ?? null
+    const sessionKey = await getSessionKey()
 
-  const cart = await (userId
-    ? db.cart.findUnique({ where: { userId }, include: cartInclude })
-    : db.cart.findUnique({ where: { sessionKey }, include: cartInclude })
-  )
+    const cart = await (userId
+      ? db.cart.findUnique({ where: { userId }, include: cartInclude })
+      : db.cart.findUnique({ where: { sessionKey }, include: cartInclude }))
 
-  return cart
-})
+    return cart
+  },
+)
 
 const cartInclude = {
   items: {
     include: {
       product: {
         select: {
-          id: true, slug: true, nameId: true, nameEn: true,
-          price: true, images: { take: 1, orderBy: { order: 'asc' as const } },
+          id: true,
+          slug: true,
+          nameId: true,
+          nameEn: true,
+          price: true,
+          images: { take: 1, orderBy: { order: 'asc' as const } },
         },
       },
       variant: {
-        select: { id: true, color: true, size: true, priceAdjust: true, stock: true },
+        select: {
+          id: true,
+          color: true,
+          size: true,
+          priceAdjust: true,
+          stock: true,
+        },
       },
     },
     orderBy: { createdAt: 'asc' as const },
@@ -119,7 +131,9 @@ const cartInclude = {
 } as const
 
 export const addToCart = createServerFn({ method: 'POST' })
-  .inputValidator((data: { productId: string; variantId?: string; qty?: number }) => data)
+  .inputValidator(
+    (data: { productId: string; variantId?: string; qty?: number }) => data,
+  )
   .handler(async ({ data, request }) => {
     const session = await auth.api.getSession({ headers: request.headers })
     const userId = session?.user?.id ?? null
@@ -181,8 +195,7 @@ export const updateCartItem = createServerFn({ method: 'POST' })
     // Verify ownership before mutating
     const cart = await (userId
       ? db.cart.findUnique({ where: { userId } })
-      : db.cart.findUnique({ where: { sessionKey } })
-    )
+      : db.cart.findUnique({ where: { sessionKey } }))
     if (!cart) throw new Error('Cart not found')
 
     const item = await db.cartItem.findFirst({
@@ -209,8 +222,7 @@ export const removeFromCart = createServerFn({ method: 'POST' })
 
     const cart = await (userId
       ? db.cart.findUnique({ where: { userId } })
-      : db.cart.findUnique({ where: { sessionKey } })
-    )
+      : db.cart.findUnique({ where: { sessionKey } }))
     if (!cart) throw new Error('Cart not found')
 
     const item = await db.cartItem.findFirst({
@@ -245,7 +257,11 @@ export const mergeGuestCart = createServerFn({ method: 'POST' })
     let merged = 0
     for (const guestItem of guestCart.items) {
       const existing = await db.cartItem.findFirst({
-        where: { cartId: userCart.id, productId: guestItem.productId, variantId: guestItem.variantId },
+        where: {
+          cartId: userCart.id,
+          productId: guestItem.productId,
+          variantId: guestItem.variantId,
+        },
       })
 
       if (existing) {
@@ -316,6 +332,7 @@ git commit -m "feat: cart server functions with guest/user support and merge on 
 ## Task 16: Xendit Helper
 
 **Files:**
+
 - Create: `src/lib/xendit.ts`
 
 - [ ] **Step 1: Write Xendit helper**
@@ -327,8 +344,8 @@ import Xendit from 'xendit-node'
 const xendit = new Xendit({ secretKey: process.env.XENDIT_SECRET_KEY! })
 
 export interface CreateInvoiceParams {
-  externalId: string    // our Order.id — used for reconciliation
-  amount: number        // total in IDR
+  externalId: string // our Order.id — used for reconciliation
+  amount: number // total in IDR
   payerEmail: string
   description: string
   successRedirectUrl: string
@@ -341,7 +358,9 @@ export interface XenditInvoice {
   status: string
 }
 
-export async function createXenditInvoice(params: CreateInvoiceParams): Promise<XenditInvoice> {
+export async function createXenditInvoice(
+  params: CreateInvoiceParams,
+): Promise<XenditInvoice> {
   const invoice = await xendit.Invoice.createInvoice({
     data: {
       externalId: params.externalId,
@@ -414,6 +433,7 @@ git commit -m "feat: Xendit invoice creation and webhook token verification"
 ## Task 17: Email Helper
 
 **Files:**
+
 - Create: `src/lib/email.ts`
 
 - [ ] **Step 1: Write email helper**
@@ -439,9 +459,14 @@ export interface OrderConfirmationData {
   items: Array<{ name: string; qty: number; price: number }>
 }
 
-export async function sendOrderConfirmation(data: OrderConfirmationData): Promise<void> {
+export async function sendOrderConfirmation(
+  data: OrderConfirmationData,
+): Promise<void> {
   const itemRows = data.items
-    .map(i => `<tr><td>${i.name}</td><td>${i.qty}</td><td>${formatIDR(i.price)}</td></tr>`)
+    .map(
+      (i) =>
+        `<tr><td>${i.name}</td><td>${i.qty}</td><td>${formatIDR(i.price)}</td></tr>`,
+    )
     .join('')
 
   const html = `
@@ -492,7 +517,11 @@ export async function sendCustomOrderNotification(data: {
 }
 
 function formatIDR(amount: number): string {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount)
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    maximumFractionDigits: 0,
+  }).format(amount)
 }
 ```
 
@@ -508,6 +537,7 @@ git commit -m "feat: Nodemailer email helper for order confirmation and custom o
 ## Task 18: Orders Server Functions
 
 **Files:**
+
 - Create: `src/server/orders.ts`
 
 - [ ] **Step 1: Write orders server functions**
@@ -520,19 +550,21 @@ import { auth } from '~/lib/auth'
 import { createXenditInvoice } from '~/lib/xendit'
 
 export const createOrder = createServerFn({ method: 'POST' })
-  .inputValidator((data: {
-    shippingAddress: {
-      name: string
-      phone: string
-      street: string
-      city: string
-      province: string
-      postal: string
-      country: string
-    }
-    couponCode?: string
-    notes?: string
-  }) => data)
+  .inputValidator(
+    (data: {
+      shippingAddress: {
+        name: string
+        phone: string
+        street: string
+        city: string
+        province: string
+        postal: string
+        country: string
+      }
+      couponCode?: string
+      notes?: string
+    }) => data,
+  )
   .handler(async ({ data, request }) => {
     const session = await auth.api.getSession({ headers: request.headers })
     if (!session?.user?.id) throw new Error('Must be logged in to checkout')
@@ -571,20 +603,25 @@ export const createOrder = createServerFn({ method: 'POST' })
           code: data.couponCode,
           isActive: true,
           OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
-          OR: [{ maxUses: null }, { usedCount: { lt: db.coupon.fields.maxUses } }],
+          OR: [
+            { maxUses: null },
+            { usedCount: { lt: db.coupon.fields.maxUses } },
+          ],
         },
       })
 
       if (coupon) {
         const subtotal = cart.items.reduce((sum, item) => {
-          const unitPrice = item.product.price + (item.variant?.priceAdjust ?? 0)
+          const unitPrice =
+            item.product.price + (item.variant?.priceAdjust ?? 0)
           return sum + unitPrice * item.qty
         }, 0)
 
         if (subtotal >= coupon.minOrder) {
-          discountAmount = coupon.type === 'PERCENT'
-            ? Math.round(subtotal * coupon.value / 100)
-            : coupon.value
+          discountAmount =
+            coupon.type === 'PERCENT'
+              ? Math.round((subtotal * coupon.value) / 100)
+              : coupon.value
         }
 
         await db.coupon.update({
@@ -603,7 +640,7 @@ export const createOrder = createServerFn({ method: 'POST' })
     const total = subtotal + shippingCost - discountAmount
 
     // Build order items with product snapshot
-    const orderItemsData = cart.items.map(item => ({
+    const orderItemsData = cart.items.map((item) => ({
       productId: item.product.id,
       variantId: item.variantId ?? undefined,
       productSnapshot: {
@@ -689,6 +726,7 @@ git commit -m "feat: order creation with Xendit invoice generation and cart clea
 ## Task 19: Xendit Webhook Handler
 
 **Files:**
+
 - Create: `src/routes/api/xendit/webhook.ts`
 
 - [ ] **Step 1: Write webhook route**
@@ -756,7 +794,7 @@ export const APIRoute = createAPIFileRoute('/api/xendit/webhook')({
       orderId: order.id,
       total: order.total,
       orderUrl: `${appUrl}/order/${order.id}`,
-      items: order.items.map(item => ({
+      items: order.items.map((item) => ({
         name: (item.productSnapshot as { nameId: string }).nameId,
         qty: item.qty,
         price: item.unitPrice,
@@ -828,6 +866,7 @@ git commit -m "feat: Xendit webhook handler with token verification, order PAID 
 ## Task 20: Cart Page
 
 **Files:**
+
 - Create: `src/routes/cart.tsx`
 - Create: `src/components/cart/CartItem.tsx`
 
@@ -851,28 +890,48 @@ interface CartItemProps {
 }
 
 export function CartItem({
-  imageUrl, nameId, nameEn, variantLabel, unitPrice, qty, onQtyChange, onRemove,
+  imageUrl,
+  nameId,
+  nameEn,
+  variantLabel,
+  unitPrice,
+  qty,
+  onQtyChange,
+  onRemove,
 }: CartItemProps) {
   const { i18n } = useTranslation()
   const name = i18n.language === 'id' ? nameId : nameEn
 
   const fmt = (n: number) =>
-    new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n)
+    new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0,
+    }).format(n)
 
   return (
     <div className="flex gap-4 py-4 border-b-2 border-[#111]/10">
       {/* Image */}
       <div className="w-20 h-20 flex-shrink-0 bg-[#eff6ff] rounded-[8px] border-2 border-[#111] overflow-hidden">
-        {imageUrl
-          ? <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
-          : <span className="w-full h-full flex items-center justify-center text-2xl">🖨️</span>
-        }
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span className="w-full h-full flex items-center justify-center text-2xl">
+            🖨️
+          </span>
+        )}
       </div>
 
       {/* Info */}
       <div className="flex-1 min-w-0">
         <p className="font-black text-sm leading-tight truncate">{name}</p>
-        {variantLabel && <p className="text-xs text-gray-400 mt-0.5">{variantLabel}</p>}
+        {variantLabel && (
+          <p className="text-xs text-gray-400 mt-0.5">{variantLabel}</p>
+        )}
         <p className="font-black text-[#2563eb] mt-1">{fmt(unitPrice)}</p>
 
         {/* Qty control */}
@@ -880,13 +939,20 @@ export function CartItem({
           <button
             onClick={() => onQtyChange(qty - 1)}
             className="w-7 h-7 border-2 border-[#111] rounded font-black flex items-center justify-center hover:bg-[#eff6ff] text-sm"
-          >−</button>
+          >
+            −
+          </button>
           <span className="font-black text-sm w-5 text-center">{qty}</span>
           <button
             onClick={() => onQtyChange(qty + 1)}
             className="w-7 h-7 border-2 border-[#111] rounded font-black flex items-center justify-center hover:bg-[#eff6ff] text-sm"
-          >+</button>
-          <button onClick={onRemove} className="ml-2 text-gray-400 hover:text-red-500 transition-colors">
+          >
+            +
+          </button>
+          <button
+            onClick={onRemove}
+            className="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+          >
             <Trash2 size={15} />
           </button>
         </div>
@@ -922,7 +988,11 @@ function CartPage() {
   const router = useRouter()
 
   const fmt = (n: number) =>
-    new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n)
+    new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0,
+    }).format(n)
 
   async function handleQtyChange(cartItemId: string, qty: number) {
     await updateCartItem({ data: { cartItemId, qty } })
@@ -938,7 +1008,9 @@ function CartPage() {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
         <p className="text-5xl mb-4">🛒</p>
-        <p className="font-black text-xl text-gray-400">Keranjang kosong / Cart is empty</p>
+        <p className="font-black text-xl text-gray-400">
+          Keranjang kosong / Cart is empty
+        </p>
         <Button asChild chunky className="mt-6">
           <Link to="/products">Belanja Sekarang →</Link>
         </Button>
@@ -953,11 +1025,15 @@ function CartPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
-      <h1 className="font-black text-3xl mb-8">{t('nav.cart', { ns: 'common' })}</h1>
+      <h1 className="font-black text-3xl mb-8">
+        {t('nav.cart', { ns: 'common' })}
+      </h1>
 
       <div className="mb-8">
-        {cart.items.map(item => {
-          const variantParts = [item.variant?.color, item.variant?.size].filter(Boolean)
+        {cart.items.map((item) => {
+          const variantParts = [item.variant?.color, item.variant?.size].filter(
+            Boolean,
+          )
           return (
             <CartItem
               key={item.id}
@@ -965,7 +1041,9 @@ function CartPage() {
               imageUrl={item.product.images[0]?.url}
               nameId={item.product.nameId}
               nameEn={item.product.nameEn}
-              variantLabel={variantParts.length > 0 ? variantParts.join(' / ') : undefined}
+              variantLabel={
+                variantParts.length > 0 ? variantParts.join(' / ') : undefined
+              }
               unitPrice={item.product.price + (item.variant?.priceAdjust ?? 0)}
               qty={item.qty}
               onQtyChange={(qty) => handleQtyChange(item.id, qty)}
@@ -983,7 +1061,9 @@ function CartPage() {
         </div>
         <div className="flex justify-between items-center mb-4 border-t-2 border-[#111]/20 pt-3">
           <span className="font-black text-lg">{t('total')}</span>
-          <span className="font-black text-2xl text-[#2563eb]">{fmt(subtotal)}</span>
+          <span className="font-black text-2xl text-[#2563eb]">
+            {fmt(subtotal)}
+          </span>
         </div>
         <Button asChild chunky size="lg" className="w-full">
           <Link to="/checkout">Lanjut Checkout →</Link>
@@ -1006,6 +1086,7 @@ git commit -m "feat: cart page with qty controls and line totals"
 ## Task 21: Checkout Page
 
 **Files:**
+
 - Create: `src/routes/checkout.tsx`
 
 - [ ] **Step 1: Write checkout page**
@@ -1044,16 +1125,28 @@ function CheckoutPage() {
   const [error, setError] = useState<string | null>(null)
   const [couponCode, setCouponCode] = useState('')
   const [form, setForm] = useState<AddressForm>({
-    name: '', phone: '', street: '', city: '', province: '', postal: '', country: 'Indonesia',
+    name: '',
+    phone: '',
+    street: '',
+    city: '',
+    province: '',
+    postal: '',
+    country: 'Indonesia',
   })
 
   const fmt = (n: number) =>
-    new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n)
+    new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0,
+    }).format(n)
 
   if (!session?.user) {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
-        <p className="font-black text-xl mb-4">Login dulu ya / Please login first</p>
+        <p className="font-black text-xl mb-4">
+          Login dulu ya / Please login first
+        </p>
         <Button asChild chunky>
           <a href="/login?redirect=/checkout">Login →</a>
         </Button>
@@ -1067,11 +1160,13 @@ function CheckoutPage() {
   }
 
   const subtotal = cart.items.reduce((sum, item) => {
-    return sum + (item.product.price + (item.variant?.priceAdjust ?? 0)) * item.qty
+    return (
+      sum + (item.product.price + (item.variant?.priceAdjust ?? 0)) * item.qty
+    )
   }, 0)
 
   function setField(field: keyof AddressForm, value: string) {
-    setForm(f => ({ ...f, [field]: value }))
+    setForm((f) => ({ ...f, [field]: value }))
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -1094,10 +1189,18 @@ function CheckoutPage() {
     }
   }
 
-  const fields: Array<{ key: keyof AddressForm; label: string; placeholder: string }> = [
+  const fields: Array<{
+    key: keyof AddressForm
+    label: string
+    placeholder: string
+  }> = [
     { key: 'name', label: 'Nama Penerima', placeholder: 'Budi Santoso' },
     { key: 'phone', label: 'Nomor HP', placeholder: '0812...' },
-    { key: 'street', label: 'Alamat Lengkap', placeholder: 'Jl. Kebon Jeruk No. 10' },
+    {
+      key: 'street',
+      label: 'Alamat Lengkap',
+      placeholder: 'Jl. Kebon Jeruk No. 10',
+    },
     { key: 'city', label: 'Kota', placeholder: 'Jakarta Barat' },
     { key: 'province', label: 'Provinsi', placeholder: 'DKI Jakarta' },
     { key: 'postal', label: 'Kode Pos', placeholder: '11530' },
@@ -1107,19 +1210,23 @@ function CheckoutPage() {
     <div className="max-w-4xl mx-auto px-4 py-10">
       <h1 className="font-black text-3xl mb-8">{t('title')}</h1>
 
-      <form onSubmit={handleSubmit} className="grid md:grid-cols-[1fr_360px] gap-8">
-
+      <form
+        onSubmit={handleSubmit}
+        className="grid md:grid-cols-[1fr_360px] gap-8"
+      >
         {/* Shipping address */}
         <div>
           <h2 className="font-black text-lg mb-4">{t('shipping_address')}</h2>
           <div className="space-y-3">
-            {fields.map(f => (
+            {fields.map((f) => (
               <div key={f.key}>
-                <label className="block text-sm font-bold mb-1">{f.label}</label>
+                <label className="block text-sm font-bold mb-1">
+                  {f.label}
+                </label>
                 <input
                   required
                   value={form[f.key]}
-                  onChange={e => setField(f.key, e.target.value)}
+                  onChange={(e) => setField(f.key, e.target.value)}
                   placeholder={f.placeholder}
                   className="w-full border-2 border-[#111] rounded-[8px] px-3 py-2 text-sm font-semibold focus:outline-none focus:border-[#2563eb]"
                 />
@@ -1132,8 +1239,9 @@ function CheckoutPage() {
         <div>
           <h2 className="font-black text-lg mb-4">{t('order_summary')}</h2>
           <div className="border-2 border-[#111] rounded-[10px] p-4 bg-[#eff6ff] space-y-3">
-            {cart.items.map(item => {
-              const price = item.product.price + (item.variant?.priceAdjust ?? 0)
+            {cart.items.map((item) => {
+              const price =
+                item.product.price + (item.variant?.priceAdjust ?? 0)
               return (
                 <div key={item.id} className="flex justify-between text-sm">
                   <span className="font-semibold truncate max-w-[180px]">
@@ -1148,11 +1256,14 @@ function CheckoutPage() {
             <div className="flex gap-2 pt-2 border-t-2 border-[#111]/20">
               <input
                 value={couponCode}
-                onChange={e => setCouponCode(e.target.value.toUpperCase())}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                 placeholder={t('coupon_placeholder')}
                 className="flex-1 border-2 border-[#111] rounded-[6px] px-2 py-1.5 text-xs font-bold focus:outline-none focus:border-[#2563eb]"
               />
-              <button type="button" className="text-xs font-black px-3 py-1.5 border-2 border-[#2563eb] text-[#2563eb] rounded-[6px] hover:bg-[#eff6ff]">
+              <button
+                type="button"
+                className="text-xs font-black px-3 py-1.5 border-2 border-[#2563eb] text-[#2563eb] rounded-[6px] hover:bg-[#eff6ff]"
+              >
                 {t('apply_coupon')}
               </button>
             </div>
@@ -1169,11 +1280,15 @@ function CheckoutPage() {
               </div>
               <div className="flex justify-between pt-1 border-t border-[#111]/20">
                 <span className="font-black">{t('total')}</span>
-                <span className="font-black text-[#2563eb] text-lg">{fmt(subtotal)}</span>
+                <span className="font-black text-[#2563eb] text-lg">
+                  {fmt(subtotal)}
+                </span>
               </div>
             </div>
 
-            {error && <p className="text-red-500 text-xs font-semibold">{error}</p>}
+            {error && (
+              <p className="text-red-500 text-xs font-semibold">{error}</p>
+            )}
 
             <Button
               type="submit"
@@ -1208,6 +1323,7 @@ git commit -m "feat: checkout page with address form and Xendit redirect"
 ## Task 22: Order Status Page
 
 **Files:**
+
 - Create: `src/routes/order/$id.tsx`
 
 - [ ] **Step 1: Write order status page**
@@ -1225,18 +1341,28 @@ export const Route = createFileRoute('/order/$id')({
   component: OrderStatusPage,
 })
 
-const statusColors: Record<OrderStatus, 'gray' | 'yellow' | 'blue' | 'green' | 'red'> = {
+const statusColors: Record<
+  OrderStatus,
+  'gray' | 'yellow' | 'blue' | 'green' | 'red'
+> = {
   PENDING_PAYMENT: 'yellow',
-  PAID:            'blue',
-  PROCESSING:      'blue',
-  PRINTING:        'blue',
-  SHIPPED:         'green',
-  DELIVERED:       'green',
-  CANCELLED:       'red',
-  REFUNDED:        'gray',
+  PAID: 'blue',
+  PROCESSING: 'blue',
+  PRINTING: 'blue',
+  SHIPPED: 'green',
+  DELIVERED: 'green',
+  CANCELLED: 'red',
+  REFUNDED: 'gray',
 }
 
-const statusSteps: OrderStatus[] = ['PENDING_PAYMENT', 'PAID', 'PROCESSING', 'PRINTING', 'SHIPPED', 'DELIVERED']
+const statusSteps: OrderStatus[] = [
+  'PENDING_PAYMENT',
+  'PAID',
+  'PROCESSING',
+  'PRINTING',
+  'SHIPPED',
+  'DELIVERED',
+]
 
 function OrderStatusPage() {
   const { t } = useTranslation('checkout')
@@ -1245,14 +1371,25 @@ function OrderStatusPage() {
   if (!order) {
     return (
       <div className="max-w-lg mx-auto px-4 py-20 text-center">
-        <p className="font-black text-xl text-gray-400">Pesanan tidak ditemukan / Order not found</p>
-        <Link to="/account" className="text-[#2563eb] font-bold mt-4 inline-block hover:underline">← Akun</Link>
+        <p className="font-black text-xl text-gray-400">
+          Pesanan tidak ditemukan / Order not found
+        </p>
+        <Link
+          to="/account"
+          className="text-[#2563eb] font-bold mt-4 inline-block hover:underline"
+        >
+          ← Akun
+        </Link>
       </div>
     )
   }
 
   const fmt = (n: number) =>
-    new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n)
+    new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0,
+    }).format(n)
 
   const currentStepIndex = statusSteps.indexOf(order.status as OrderStatus)
   const statusKey = `status_${order.status.toLowerCase()}` as const
@@ -1260,11 +1397,16 @@ function OrderStatusPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
       <h1 className="font-black text-3xl mb-2">{t('order_status')}</h1>
-      <p className="text-gray-400 text-sm mb-8 font-mono">#{order.id.slice(-12).toUpperCase()}</p>
+      <p className="text-gray-400 text-sm mb-8 font-mono">
+        #{order.id.slice(-12).toUpperCase()}
+      </p>
 
       {/* Status badge */}
       <div className="mb-8">
-        <Badge color={statusColors[order.status as OrderStatus]} className="text-sm px-4 py-2">
+        <Badge
+          color={statusColors[order.status as OrderStatus]}
+          className="text-sm px-4 py-2"
+        >
           {t(statusKey)}
         </Badge>
       </div>
@@ -1276,19 +1418,32 @@ function OrderStatusPage() {
             {statusSteps.map((step, i) => {
               const done = i <= currentStepIndex
               return (
-                <div key={step} className="flex-1 flex flex-col items-center gap-1">
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-black z-10 ${
-                    done ? 'bg-[#2563eb] border-[#2563eb] text-white' : 'bg-white border-gray-300 text-gray-300'
-                  }`}>
+                <div
+                  key={step}
+                  className="flex-1 flex flex-col items-center gap-1"
+                >
+                  <div
+                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-black z-10 ${
+                      done
+                        ? 'bg-[#2563eb] border-[#2563eb] text-white'
+                        : 'bg-white border-gray-300 text-gray-300'
+                    }`}
+                  >
                     {done ? '✓' : i + 1}
                   </div>
                   {i < statusSteps.length - 1 && (
-                    <div className={`absolute top-3 h-0.5 ${done && i < currentStepIndex ? 'bg-[#2563eb]' : 'bg-gray-200'}`}
-                      style={{ left: `calc(${(i + 0.5) * (100 / statusSteps.length)}%)`, width: `calc(${100 / statusSteps.length}%)` }}
+                    <div
+                      className={`absolute top-3 h-0.5 ${done && i < currentStepIndex ? 'bg-[#2563eb]' : 'bg-gray-200'}`}
+                      style={{
+                        left: `calc(${(i + 0.5) * (100 / statusSteps.length)}%)`,
+                        width: `calc(${100 / statusSteps.length}%)`,
+                      }}
                     />
                   )}
                   <span className="text-[10px] text-gray-400 text-center leading-tight mt-1">
-                    {t(`status_${step.toLowerCase()}` as Parameters<typeof t>[0])}
+                    {t(
+                      `status_${step.toLowerCase()}` as Parameters<typeof t>[0],
+                    )}
                   </span>
                 </div>
               )
@@ -1303,8 +1458,12 @@ function OrderStatusPage() {
           <p className="font-black text-sm">📦 Tracking</p>
           <p className="text-sm mt-1">{order.trackingNumber}</p>
           {order.trackingUrl && (
-            <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer"
-              className="text-[#2563eb] font-bold text-sm hover:underline mt-1 inline-block">
+            <a
+              href={order.trackingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#2563eb] font-bold text-sm hover:underline mt-1 inline-block"
+            >
               Track package →
             </a>
           )}
@@ -1313,8 +1472,10 @@ function OrderStatusPage() {
 
       {/* Pay now button if still pending */}
       {order.status === 'PENDING_PAYMENT' && order.xenditPaymentUrl && (
-        <a href={order.xenditPaymentUrl}
-          className="block w-full text-center bg-[#facc15] text-[#111] font-black py-3 rounded-[10px] border-2 border-[#111] hover:bg-[#eab308] transition-colors mb-6 btn-chunky">
+        <a
+          href={order.xenditPaymentUrl}
+          className="block w-full text-center bg-[#facc15] text-[#111] font-black py-3 rounded-[10px] border-2 border-[#111] hover:bg-[#eab308] transition-colors mb-6 btn-chunky"
+        >
           💳 Bayar Sekarang
         </a>
       )}
@@ -1322,8 +1483,11 @@ function OrderStatusPage() {
       {/* Order items */}
       <div className="border-2 border-[#111] rounded-[10px] p-4">
         <p className="font-black mb-3">Detail Pesanan</p>
-        {order.items.map(item => (
-          <div key={item.id} className="flex justify-between py-2 border-b border-[#111]/10 last:border-0 text-sm">
+        {order.items.map((item) => (
+          <div
+            key={item.id}
+            className="flex justify-between py-2 border-b border-[#111]/10 last:border-0 text-sm"
+          >
             <span className="font-semibold">
               {(item.productSnapshot as { nameId: string }).nameId} ×{item.qty}
             </span>
@@ -1332,7 +1496,9 @@ function OrderStatusPage() {
         ))}
         <div className="flex justify-between pt-3 border-t-2 border-[#111]/20 mt-1">
           <span className="font-black">{t('total')}</span>
-          <span className="font-black text-[#2563eb] text-lg">{fmt(order.total)}</span>
+          <span className="font-black text-[#2563eb] text-lg">
+            {fmt(order.total)}
+          </span>
         </div>
       </div>
     </div>

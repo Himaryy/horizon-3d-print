@@ -45,6 +45,7 @@ src/
 ## Task 7: Root Layout
 
 **Files:**
+
 - Create: `src/routes/__root.tsx`
 
 - [ ] **Step 1: Write root layout**
@@ -70,7 +71,11 @@ export const Route = createRootRoute({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { title: 'Brand3D — 3D Printed Toys Indonesia' },
-      { name: 'description', content: 'Articulated 3D printed figures and custom prints made in Indonesia.' },
+      {
+        name: 'description',
+        content:
+          'Articulated 3D printed figures and custom prints made in Indonesia.',
+      },
     ],
     links: [
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -92,7 +97,9 @@ export const Route = createRootRoute({
     <div className="flex flex-col items-center justify-center min-h-screen gap-4">
       <h1 className="text-4xl font-black">404</h1>
       <p className="text-gray-500">Halaman tidak ditemukan / Page not found</p>
-      <a href="/" className="text-[#2563eb] font-bold underline">← Kembali ke Home</a>
+      <a href="/" className="text-[#2563eb] font-bold underline">
+        ← Kembali ke Home
+      </a>
     </div>
   ),
 })
@@ -145,6 +152,7 @@ git commit -m "feat: root layout with model-viewer CDN, i18n init, Tailwind"
 ## Task 8: Navbar Component
 
 **Files:**
+
 - Create: `src/components/layout/Navbar.tsx`
 
 - [ ] **Step 1: Write Navbar**
@@ -168,7 +176,6 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-[#2563eb] shadow-md">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-
         {/* Logo */}
         <Link to="/" className="font-black text-xl italic text-white">
           Brand<span className="text-[#facc15]">3D!</span>
@@ -179,21 +186,27 @@ export function Navbar() {
           <Link
             to="/products"
             className="text-white/80 hover:text-white text-sm font-semibold transition-colors"
-            activeProps={{ className: 'text-white underline underline-offset-4' }}
+            activeProps={{
+              className: 'text-white underline underline-offset-4',
+            }}
           >
             {t('nav.products')}
           </Link>
           <Link
             to="/custom"
             className="text-white/80 hover:text-white text-sm font-semibold transition-colors"
-            activeProps={{ className: 'text-white underline underline-offset-4' }}
+            activeProps={{
+              className: 'text-white underline underline-offset-4',
+            }}
           >
             {t('nav.custom')}
           </Link>
           <Link
             to="/about"
             className="text-white/80 hover:text-white text-sm font-semibold transition-colors"
-            activeProps={{ className: 'text-white underline underline-offset-4' }}
+            activeProps={{
+              className: 'text-white underline underline-offset-4',
+            }}
           >
             {t('nav.about')}
           </Link>
@@ -246,7 +259,9 @@ export function Footer() {
     <footer className="bg-[#111111] text-white mt-16 py-8">
       <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
-          <span className="font-black text-xl italic">Brand<span className="text-[#facc15]">3D!</span></span>
+          <span className="font-black text-xl italic">
+            Brand<span className="text-[#facc15]">3D!</span>
+          </span>
           <p className="text-white/50 text-sm mt-1">{t('footer.tagline')}</p>
         </div>
         <p className="text-white/30 text-xs">
@@ -270,6 +285,7 @@ git commit -m "feat: Navbar and Footer components with i18n and lang toggle"
 ## Task 9: Base UI Components
 
 **Files:**
+
 - Create: `src/components/ui/Button.tsx`
 - Create: `src/components/ui/Badge.tsx`
 - Create: `src/components/ui/Card.tsx`
@@ -287,20 +303,20 @@ type Size = 'sm' | 'md' | 'lg'
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
   size?: Size
-  chunky?: boolean  // apply toy-shop tilt effect on hover
+  chunky?: boolean // apply toy-shop tilt effect on hover
 }
 
 const variantStyles: Record<Variant, string> = {
-  primary:   'bg-[#2563eb] text-white hover:bg-[#1d4ed8]',
+  primary: 'bg-[#2563eb] text-white hover:bg-[#1d4ed8]',
   secondary: 'bg-white text-[#111] border-2 border-[#111] hover:bg-[#eff6ff]',
-  ghost:     'bg-transparent text-[#2563eb] hover:bg-[#eff6ff]',
-  accent:    'bg-[#facc15] text-[#111] hover:bg-[#eab308]',
+  ghost: 'bg-transparent text-[#2563eb] hover:bg-[#eff6ff]',
+  accent: 'bg-[#facc15] text-[#111] hover:bg-[#eab308]',
 }
 
 const sizeStyles: Record<Size, string> = {
-  sm:  'px-3 py-1.5 text-xs',
-  md:  'px-5 py-2.5 text-sm',
-  lg:  'px-7 py-3.5 text-base',
+  sm: 'px-3 py-1.5 text-xs',
+  md: 'px-5 py-2.5 text-sm',
+  lg: 'px-7 py-3.5 text-base',
 }
 
 export function Button({
@@ -342,14 +358,19 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const colorStyles: Record<Color, string> = {
-  blue:   'bg-[#dbeafe] text-[#1e40af]',
+  blue: 'bg-[#dbeafe] text-[#1e40af]',
   yellow: 'bg-[#fef9c3] text-[#713f12]',
-  green:  'bg-[#dcfce7] text-[#14532d]',
-  gray:   'bg-[#f3f4f6] text-[#374151]',
-  red:    'bg-[#fee2e2] text-[#991b1b]',
+  green: 'bg-[#dcfce7] text-[#14532d]',
+  gray: 'bg-[#f3f4f6] text-[#374151]',
+  red: 'bg-[#fee2e2] text-[#991b1b]',
 }
 
-export function Badge({ color = 'blue', className, children, ...props }: BadgeProps) {
+export function Badge({
+  color = 'blue',
+  className,
+  children,
+  ...props
+}: BadgeProps) {
   return (
     <span
       className={clsx(
@@ -379,12 +400,17 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const tiltStyles: Record<Tilt, string> = {
-  none:  '',
-  left:  'card-tilt-left',
+  none: '',
+  left: 'card-tilt-left',
   right: 'card-tilt-right',
 }
 
-export function Card({ tilt = 'none', className, children, ...props }: CardProps) {
+export function Card({
+  tilt = 'none',
+  className,
+  children,
+  ...props
+}: CardProps) {
   return (
     <div
       className={clsx(
@@ -412,6 +438,7 @@ git commit -m "feat: base UI components (Button, Badge, Card) with toy-shop styl
 ## Task 10: Product Server Functions
 
 **Files:**
+
 - Create: `src/server/products.ts`
 
 - [ ] **Step 1: Write product server functions**
@@ -532,6 +559,7 @@ git commit -m "feat: product server functions (featured, catalog, detail)"
 ## Task 11: ProductCard Component
 
 **Files:**
+
 - Create: `src/components/products/ProductCard.tsx`
 - Create: `src/components/products/ProductGrid.tsx`
 
@@ -575,7 +603,10 @@ export function ProductCard({
   const outOfStock = stock === 0
 
   return (
-    <Card tilt={tilt} className="group hover:shadow-[4px_4px_0_#111] transition-shadow">
+    <Card
+      tilt={tilt}
+      className="group hover:shadow-[4px_4px_0_#111] transition-shadow"
+    >
       <Link to="/products/$slug" params={{ slug }}>
         {/* Product image */}
         <div className="bg-[#eff6ff] h-44 flex items-center justify-center overflow-hidden">
@@ -593,7 +624,10 @@ export function ProductCard({
 
       <div className="p-3">
         {/* Category badge */}
-        <Badge color={category === 'READY_MADE' ? 'blue' : 'yellow'} className="mb-2">
+        <Badge
+          color={category === 'READY_MADE' ? 'blue' : 'yellow'}
+          className="mb-2"
+        >
           {category === 'READY_MADE' ? t('filter_ready') : t('filter_custom')}
         </Badge>
 
@@ -607,11 +641,17 @@ export function ProductCard({
         {/* Price + Add to cart */}
         <div className="flex items-center justify-between mt-3">
           <span className="font-black text-[#2563eb] text-base">
-            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(price)}
+            {new Intl.NumberFormat('id-ID', {
+              style: 'currency',
+              currency: 'IDR',
+              maximumFractionDigits: 0,
+            }).format(price)}
           </span>
 
           {outOfStock ? (
-            <span className="text-xs text-gray-400 font-semibold">{t('out_of_stock')}</span>
+            <span className="text-xs text-gray-400 font-semibold">
+              {t('out_of_stock')}
+            </span>
           ) : (
             <button
               onClick={onAddToCart}
@@ -700,6 +740,7 @@ git commit -m "feat: ProductCard and ProductGrid components"
 ## Task 12: Home Page
 
 **Files:**
+
 - Create: `src/routes/index.tsx`
 
 - [ ] **Step 1: Write home page route**
@@ -730,8 +771,10 @@ function HomePage() {
             {t('hero.badge')}
           </p>
           <h1 className="font-black text-5xl md:text-7xl leading-[1.05] text-[#111] mb-6">
-            {t('hero.heading_1')}<br />
-            <span className="text-[#2563eb]">{t('hero.heading_2')}</span><br />
+            {t('hero.heading_1')}
+            <br />
+            <span className="text-[#2563eb]">{t('hero.heading_2')}</span>
+            <br />
             <span className="bg-[#facc15] px-2">{t('hero.heading_3')}</span>
           </h1>
           <p className="text-gray-500 text-base md:text-lg max-w-md mb-8">
@@ -754,7 +797,10 @@ function HomePage() {
           <h2 className="font-black text-xs tracking-[3px] text-gray-400 uppercase">
             {t('featured', { ns: 'products' })}
           </h2>
-          <Link to="/products" className="text-[#2563eb] font-bold text-sm hover:underline">
+          <Link
+            to="/products"
+            className="text-[#2563eb] font-bold text-sm hover:underline"
+          >
             Lihat Semua / View All →
           </Link>
         </div>
@@ -766,7 +812,9 @@ function HomePage() {
         <div className="border-2 border-dashed border-[#2563eb] rounded-[10px] p-8 text-center bg-[#eff6ff]">
           <p className="text-3xl mb-3">✏️</p>
           <h2 className="font-black text-2xl text-[#2563eb] mb-2">
-            {t('lang_toggle') === 'EN' ? 'Desain milikmu sendiri!' : 'Design your own!'}
+            {t('lang_toggle') === 'EN'
+              ? 'Desain milikmu sendiri!'
+              : 'Design your own!'}
           </h2>
           <p className="text-gray-500 mb-6">
             {t('lang_toggle') === 'EN'
@@ -793,10 +841,18 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant
   size?: Size
   chunky?: boolean
-  asChild?: boolean  // renders children as the root element
+  asChild?: boolean // renders children as the root element
 }
 
-export function Button({ asChild = false, variant = 'primary', size = 'md', chunky = false, className, children, ...props }: ButtonProps) {
+export function Button({
+  asChild = false,
+  variant = 'primary',
+  size = 'md',
+  chunky = false,
+  className,
+  children,
+  ...props
+}: ButtonProps) {
   const Comp = asChild ? Slot : 'button'
   return (
     <Comp
@@ -849,6 +905,7 @@ git commit -m "feat: home page with hero section and featured products"
 ## Task 13: Product Catalog Page
 
 **Files:**
+
 - Create: `src/routes/products/index.tsx`
 
 - [ ] **Step 1: Write catalog page**
@@ -874,9 +931,10 @@ function ProductsPage() {
   const allProducts = Route.useLoaderData()
   const [filter, setFilter] = useState<Filter>('ALL')
 
-  const filtered = filter === 'ALL'
-    ? allProducts
-    : allProducts.filter(p => p.category === filter)
+  const filtered =
+    filter === 'ALL'
+      ? allProducts
+      : allProducts.filter((p) => p.category === filter)
 
   const filters: Array<{ value: Filter; label: string }> = [
     { value: 'ALL', label: t('filter_all') },
@@ -890,7 +948,7 @@ function ProductsPage() {
 
       {/* Filter tabs */}
       <div className="flex gap-2 mb-8 flex-wrap">
-        {filters.map(f => (
+        {filters.map((f) => (
           <button
             key={f.value}
             onClick={() => setFilter(f.value)}
@@ -923,6 +981,7 @@ git commit -m "feat: product catalog page with category filter"
 ## Task 14: ModelViewer Component + Product Detail Page
 
 **Files:**
+
 - Create: `src/components/products/ModelViewer.tsx`
 - Create: `src/routes/products/$slug.tsx`
 
@@ -935,23 +994,26 @@ git commit -m "feat: product catalog page with category filter"
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'model-viewer': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
-        src?: string
-        alt?: string
-        'auto-rotate'?: boolean | ''
-        'camera-controls'?: boolean | ''
-        'shadow-intensity'?: string
-        poster?: string
-        loading?: 'auto' | 'lazy' | 'eager'
-        style?: React.CSSProperties
-        class?: string
-      }, HTMLElement>
+      'model-viewer': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement> & {
+          src?: string
+          alt?: string
+          'auto-rotate'?: boolean | ''
+          'camera-controls'?: boolean | ''
+          'shadow-intensity'?: string
+          poster?: string
+          loading?: 'auto' | 'lazy' | 'eager'
+          style?: React.CSSProperties
+          class?: string
+        },
+        HTMLElement
+      >
     }
   }
 }
 
 interface ModelViewerProps {
-  src: string     // Cloudinary .glb URL
+  src: string // Cloudinary .glb URL
   alt: string
   poster?: string // preview image shown while model loads
 }
@@ -1004,8 +1066,15 @@ function ProductDetailPage() {
   if (!product) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-20 text-center">
-        <p className="text-2xl font-black text-gray-400">Produk tidak ditemukan / Product not found</p>
-        <Link to="/products" className="text-[#2563eb] font-bold mt-4 inline-block hover:underline">← Kembali</Link>
+        <p className="text-2xl font-black text-gray-400">
+          Produk tidak ditemukan / Product not found
+        </p>
+        <Link
+          to="/products"
+          className="text-[#2563eb] font-bold mt-4 inline-block hover:underline"
+        >
+          ← Kembali
+        </Link>
       </div>
     )
   }
@@ -1014,7 +1083,9 @@ function ProductDetailPage() {
   const name = lang === 'id' ? product.nameId : product.nameEn
   const desc = lang === 'id' ? product.descId : product.descEn
 
-  const selectedVariant = product.variants.find(v => v.id === selectedVariantId)
+  const selectedVariant = product.variants.find(
+    (v) => v.id === selectedVariantId,
+  )
   const finalPrice = product.price + (selectedVariant?.priceAdjust ?? 0)
   const finalStock = selectedVariant?.stock ?? product.stock
 
@@ -1023,7 +1094,6 @@ function ProductDetailPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="grid md:grid-cols-2 gap-10">
-
         {/* Left: images + 3D viewer */}
         <div className="space-y-4">
           {/* Toggle: image vs 3D */}
@@ -1046,13 +1116,23 @@ function ProductDetailPage() {
 
           {/* Main display */}
           {show3D && product.modelUrl ? (
-            <ModelViewer src={product.modelUrl} alt={name} poster={activeImage?.url} />
+            <ModelViewer
+              src={product.modelUrl}
+              alt={name}
+              poster={activeImage?.url}
+            />
           ) : (
             <div className="aspect-square bg-[#eff6ff] rounded-[10px] border-2 border-[#111] overflow-hidden">
               {activeImage ? (
-                <img src={activeImage.url} alt={activeImage.alt} className="w-full h-full object-cover" />
+                <img
+                  src={activeImage.url}
+                  alt={activeImage.alt}
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-6xl">🖨️</div>
+                <div className="w-full h-full flex items-center justify-center text-6xl">
+                  🖨️
+                </div>
               )}
             </div>
           )}
@@ -1065,10 +1145,16 @@ function ProductDetailPage() {
                   key={img.url}
                   onClick={() => setActiveImageIndex(i)}
                   className={`w-16 h-16 flex-shrink-0 rounded border-2 overflow-hidden transition-all ${
-                    i === activeImageIndex ? 'border-[#2563eb]' : 'border-[#111]/30'
+                    i === activeImageIndex
+                      ? 'border-[#2563eb]'
+                      : 'border-[#111]/30'
                   }`}
                 >
-                  <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
+                  <img
+                    src={img.url}
+                    alt={img.alt}
+                    className="w-full h-full object-cover"
+                  />
                 </button>
               ))}
             </div>
@@ -1087,13 +1173,21 @@ function ProductDetailPage() {
         {/* Right: info */}
         <div className="space-y-5">
           <Badge color={product.category === 'READY_MADE' ? 'blue' : 'yellow'}>
-            {product.category === 'READY_MADE' ? t('filter_ready') : t('filter_custom')}
+            {product.category === 'READY_MADE'
+              ? t('filter_ready')
+              : t('filter_custom')}
           </Badge>
 
-          <h1 className="font-black text-3xl md:text-4xl leading-tight">{name}</h1>
+          <h1 className="font-black text-3xl md:text-4xl leading-tight">
+            {name}
+          </h1>
 
           <p className="font-black text-3xl text-[#2563eb]">
-            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(finalPrice)}
+            {new Intl.NumberFormat('id-ID', {
+              style: 'currency',
+              currency: 'IDR',
+              maximumFractionDigits: 0,
+            }).format(finalPrice)}
           </p>
 
           {/* Variants */}
@@ -1101,19 +1195,22 @@ function ProductDetailPage() {
             <div>
               <p className="font-black text-sm mb-2">{t('variants')}</p>
               <div className="flex gap-2 flex-wrap">
-                {product.variants.map(v => (
+                {product.variants.map((v) => (
                   <button
                     key={v.id}
                     onClick={() => setSelectedVariantId(v.id)}
                     className={`px-3 py-1.5 text-xs font-black rounded border-2 border-[#111] transition-all ${
                       selectedVariantId === v.id
                         ? 'bg-[#2563eb] text-white border-[#2563eb]'
-                        : v.stock === 0 ? 'bg-gray-100 text-gray-400 line-through' : 'bg-white hover:bg-[#eff6ff]'
+                        : v.stock === 0
+                          ? 'bg-gray-100 text-gray-400 line-through'
+                          : 'bg-white hover:bg-[#eff6ff]'
                     }`}
                     disabled={v.stock === 0}
                   >
                     {[v.color, v.size].filter(Boolean).join(' / ')}
-                    {v.priceAdjust > 0 && ` +${new Intl.NumberFormat('id-ID').format(v.priceAdjust)}`}
+                    {v.priceAdjust > 0 &&
+                      ` +${new Intl.NumberFormat('id-ID').format(v.priceAdjust)}`}
                   </button>
                 ))}
               </div>
@@ -1122,7 +1219,14 @@ function ProductDetailPage() {
 
           {/* Stock */}
           <p className="text-sm text-gray-500">
-            {t('stock')}: <span className={finalStock > 0 ? 'text-green-600 font-bold' : 'text-red-500 font-bold'}>
+            {t('stock')}:{' '}
+            <span
+              className={
+                finalStock > 0
+                  ? 'text-green-600 font-bold'
+                  : 'text-red-500 font-bold'
+              }
+            >
               {finalStock > 0 ? finalStock : t('out_of_stock')}
             </span>
           </p>
@@ -1140,14 +1244,22 @@ function ProductDetailPage() {
           {/* Marketplace links */}
           <div className="flex gap-3 flex-wrap">
             {product.tokopediaUrl && (
-              <a href={product.tokopediaUrl} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm font-semibold text-gray-500 border border-gray-200 px-3 py-1.5 rounded hover:bg-gray-50 transition-colors">
+              <a
+                href={product.tokopediaUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-sm font-semibold text-gray-500 border border-gray-200 px-3 py-1.5 rounded hover:bg-gray-50 transition-colors"
+              >
                 {t('buy_tokopedia')} <ExternalLink size={12} />
               </a>
             )}
             {product.shopeeUrl && (
-              <a href={product.shopeeUrl} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm font-semibold text-gray-500 border border-gray-200 px-3 py-1.5 rounded hover:bg-gray-50 transition-colors">
+              <a
+                href={product.shopeeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-sm font-semibold text-gray-500 border border-gray-200 px-3 py-1.5 rounded hover:bg-gray-50 transition-colors"
+              >
                 {t('buy_shopee')} <ExternalLink size={12} />
               </a>
             )}
@@ -1155,7 +1267,9 @@ function ProductDetailPage() {
 
           {/* Description */}
           <div className="pt-4 border-t-2 border-[#111]/10">
-            <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">{desc}</p>
+            <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">
+              {desc}
+            </p>
           </div>
         </div>
       </div>
@@ -1165,18 +1279,27 @@ function ProductDetailPage() {
         <section className="mt-16">
           <h2 className="font-black text-2xl mb-6">⭐ Reviews</h2>
           <div className="grid md:grid-cols-2 gap-4">
-            {product.reviews.map(review => (
-              <div key={review.id} className="border-2 border-[#111]/10 rounded-[10px] p-4">
+            {product.reviews.map((review) => (
+              <div
+                key={review.id}
+                className="border-2 border-[#111]/10 rounded-[10px] p-4"
+              >
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-8 h-8 rounded-full bg-[#eff6ff] flex items-center justify-center font-black text-sm text-[#2563eb]">
                     {review.user.name?.[0] ?? '?'}
                   </div>
                   <div>
-                    <p className="font-black text-sm">{review.user.name ?? 'Anonymous'}</p>
-                    <p className="text-xs text-gray-400">{'⭐'.repeat(review.rating)}</p>
+                    <p className="font-black text-sm">
+                      {review.user.name ?? 'Anonymous'}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {'⭐'.repeat(review.rating)}
+                    </p>
                   </div>
                 </div>
-                {review.comment && <p className="text-sm text-gray-600">{review.comment}</p>}
+                {review.comment && (
+                  <p className="text-sm text-gray-600">{review.comment}</p>
+                )}
               </div>
             ))}
           </div>
@@ -1194,6 +1317,7 @@ pnpm dev
 ```
 
 Navigate to `/products/<your-slug>` — verify:
+
 - Images render
 - Variant buttons work (change price/stock)
 - 3D viewer toggle appears when `modelUrl` is set

@@ -76,8 +76,12 @@ export function HowItWorks() {
             <div className="h-display text-[120px] leading-none select-none opacity-10 my-4">
               {step.n}
             </div>
-            <h3 className="h-display text-[48px] m-0 mb-2 leading-none">{step.title}</h3>
-            <p className="text-[14.5px] leading-relaxed m-0 opacity-90">{step.body}</p>
+            <h3 className="h-display text-[48px] m-0 mb-2 leading-none">
+              {step.title}
+            </h3>
+            <p className="text-[14.5px] leading-relaxed m-0 opacity-90">
+              {step.body}
+            </p>
           </motion.div>
         ))}
       </motion.div>
